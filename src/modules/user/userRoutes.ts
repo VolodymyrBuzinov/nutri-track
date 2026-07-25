@@ -2,7 +2,7 @@ import { asyncHandler } from "@/utils/asyncHandler.js";
 import express from "express";
 import {
   deleteUserAvatar,
-  getUserById,
+  getCurrentUser,
   updateUser,
   updateUserAvatar,
 } from "./userControllers.js";
@@ -16,17 +16,17 @@ import {
 
 export const userRoutes = express.Router();
 
-userRoutes.get("/:userId", userAuthMiddleware, asyncHandler(getUserById));
+userRoutes.get("/me", userAuthMiddleware, asyncHandler(getCurrentUser));
 
 userRoutes.patch(
-  "/:userId",
+  "/me",
   userAuthMiddleware,
   validateSchema(updateUserValidator),
   asyncHandler(updateUser)
 );
 
 userRoutes.patch(
-  "/:userId/image",
+  "/me/image",
   userAuthMiddleware,
   parseImageUpload,
   validateImageUpload,
@@ -34,7 +34,7 @@ userRoutes.patch(
 );
 
 userRoutes.delete(
-  "/:userId/image",
+  "/me/image",
   userAuthMiddleware,
   asyncHandler(deleteUserAvatar)
 );

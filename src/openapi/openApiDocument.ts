@@ -164,10 +164,9 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/{userId}": {
-      parameters: [pathParameter("userId", "User identifier.")],
+    "/users/me": {
       get: {
-        operationId: "getUser",
+        operationId: "getCurrentUser",
         tags: ["Users"],
         summary: "Get the authenticated user's profile",
         security: accessTokenSecurity,
@@ -197,8 +196,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/{userId}/image": {
-      parameters: [pathParameter("userId", "User identifier.")],
+    "/users/me/image": {
       patch: {
         operationId: "uploadUserAvatar",
         tags: ["Users"],
@@ -414,7 +412,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/admin": {
+    "/admin/me": {
       get: {
         operationId: "adminGetProfile",
         tags: ["Admin profile"],

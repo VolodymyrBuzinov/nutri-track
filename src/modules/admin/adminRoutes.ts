@@ -5,4 +5,4 @@ import { adminAuthMiddleware } from "@/middlewares/authMiddlewares.js";
 
 export const adminRoutes = express.Router();
 
-adminRoutes.get("/", adminAuthMiddleware, asyncHandler(getAdmin));
+adminRoutes.get("/me", adminAuthMiddleware, asyncHandler(getAdmin));

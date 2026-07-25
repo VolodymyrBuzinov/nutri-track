@@ -6,20 +6,18 @@ import {
   updateUserService,
 } from "./userService.js";
 import { HTTP_STATUS_CODES } from "@/config/consts.js";
-import { matchOwnership } from "@/utils/index.js";
 
-export const getUserById = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  matchOwnership(userId as string, res.locals?.auth?.userId);
-  const user = await getUserByIdService(userId as string);
+export const getCurrentUser = async (_req: Request, res: Response) => {
+  const { userId } = res.locals?.auth;
+  const user = await getUserByIdService(userId);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: { ...user } });
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const { userId } = res.locals?.auth;
   const { name, age, weight, gender, height, activityLevel } = req.body;
-  matchOwnership(userId as string, res.locals?.auth?.userId);
-  const user = await updateUserService(userId as string, {
+
+  const user = await updateUserService(userId, {
     name,
     age,
     weight,
@@ -32,17 +30,15 @@ export const updateUser = async (req: Request, res: Response) => {
     .json({ message: "User updated successfully", data: { ...user } });
 };
 
-export const updateUserAvatar = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+export const updateUserAvatar = async (_req: Request, res: Response) => {
+  const { userId } = res.locals?.auth;
   const image = res.locals.imageUpload;
-  matchOwnership(userId as string, res.locals?.auth?.userId);
-  const data = await updateUserAvatarService(userId as string, image);
+  const data = await updateUserAvatarService(userId, image);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data });
 };
 
-export const deleteUserAvatar = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  matchOwnership(userId as string, res.locals?.auth?.userId);
-  await deleteUserAvatarService(userId as string);
+export const deleteUserAvatar = async (_req: Request, res: Response) => {
+  const { userId } = res.locals?.auth;
+  await deleteUserAvatarService(userId);
   return res.status(HTTP_STATUS_CODES.NO_CONTENT).json({});
 };

@@ -51,15 +51,6 @@ export const calculateUserNormaValues = ({
   return { bmr, tdee, protein, carbohydrates, fat };
 };
 
-export const matchOwnership = (userId: string, authUserId: string) => {
-  if (userId !== authUserId) {
-    throw new AppError(
-      HTTP_STATUS_CODES.FORBIDDEN,
-      "You are not the owner of this resource"
-    );
-  }
-};
-
 const authCookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
