@@ -1,11 +1,11 @@
-import { HTTP_STATUS_CODES } from "@/config/consts.js";
+import { HTTP_STATUS_CODES, Role } from "@/config/consts.js";
 import { authVerifierClient } from "@/config/supabase.js";
 import { AppError } from "@/services/appError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { NextFunction, Request, Response } from "express";
 import { getAdminService } from "@/modules/admin/adminServices.js";
 
-const getToken = (req: Request, role: string) => {
+const getToken = (req: Request, role: Role) => {
   const token = req.cookies?.[`${role}AccessToken`];
   if (!token) {
     throw new AppError(
@@ -49,3 +49,16 @@ export const userAuthMiddleware = asyncHandler(
     next();
   }
 );
+
+export const currentUserSessionMiddleware = (role: Role) =>
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.cookies?.[`${role}AccessToken`];
+
+    if (!token) {
+      return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: null });
+    }
+    const userId = await getUserId(token);
+    role === "admin" && (await getAdminService(userId));
+    res.locals.auth = { userId, role };
+    next();
+  });

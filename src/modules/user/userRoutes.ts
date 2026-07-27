@@ -8,7 +8,10 @@ import {
 } from "./userControllers.js";
 import { validateSchema } from "@/utils/validation.js";
 import { updateUserValidator } from "./userValidators.js";
-import { userAuthMiddleware } from "@/middlewares/authMiddlewares.js";
+import {
+  currentUserSessionMiddleware,
+  userAuthMiddleware,
+} from "@/middlewares/authMiddlewares.js";
 import {
   parseImageUpload,
   validateImageUpload,
@@ -16,7 +19,11 @@ import {
 
 export const userRoutes = express.Router();
 
-userRoutes.get("/me", userAuthMiddleware, asyncHandler(getCurrentUser));
+userRoutes.get(
+  "/me",
+  currentUserSessionMiddleware("user"),
+  asyncHandler(getCurrentUser)
+);
 
 userRoutes.patch(
   "/me",

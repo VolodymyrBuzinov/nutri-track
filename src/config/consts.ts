@@ -13,3 +13,7 @@ export const HTTP_STATUS_CODES = {
 export const DATE_FORMAT = "yyyy-MM-dd";
 
 export const SORT_ORDER = ["asc", "desc"];
+
+export const ROLES = ["user", "admin"] as const;
+
+export type Role = (typeof ROLES)[number];
