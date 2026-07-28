@@ -68,16 +68,30 @@ const authCookieHeaders = (
   },
 });
 
-const standardProtectedErrors = {
-  "400": responseRef("ValidationError"),
+const protectedErrors = {
   "401": responseRef("UnauthorizedError"),
-  "403": responseRef("ForbiddenError"),
   "500": responseRef("InternalServerError"),
 };
 
+const validatedProtectedErrors = {
+  "400": responseRef("ValidationError"),
+  ...protectedErrors,
+};
+
+const imageProtectedErrors = {
+  "400": responseRef("BadRequestError"),
+  ...protectedErrors,
+};
+
 const standardAdminErrors = {
-  ...standardProtectedErrors,
-  "404": responseRef("NotFoundError"),
+  "400": responseRef("BadRequestError"),
+  "401": responseRef("UnauthorizedError"),
+  "500": responseRef("InternalServerError"),
+};
+
+const validatedAdminErrors = {
+  ...standardAdminErrors,
+  "400": responseRef("BadRequestOrValidationError"),
 };
 
 const binaryImageBody = {
@@ -126,8 +140,9 @@ export const openApiDocument = {
             ...dataResponse("Login successful.", schemaRef("User")),
             headers: authCookieHeaders("user", "set"),
           },
-          "400": responseRef("ValidationError"),
+          "400": responseRef("BadRequestOrValidationError"),
           "401": responseRef("UnauthorizedError"),
+          "404": responseRef("NotFoundError"),
           "500": responseRef("InternalServerError"),
         },
       },
@@ -172,7 +187,7 @@ export const openApiDocument = {
         security: accessTokenSecurity,
         responses: {
           "200": dataResponse("User profile.", schemaRef("User")),
-          ...standardProtectedErrors,
+          ...protectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -191,7 +206,7 @@ export const openApiDocument = {
               data: schemaRef("User"),
             },
           }),
-          ...standardProtectedErrors,
+          ...validatedProtectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -213,7 +228,8 @@ export const openApiDocument = {
               avatarUrl: { type: "string", format: "uri" },
             },
           }),
-          ...standardProtectedErrors,
+          ...imageProtectedErrors,
+          "404": responseRef("NotFoundError"),
           "413": responseRef("PayloadTooLargeError"),
         },
       },
@@ -224,7 +240,7 @@ export const openApiDocument = {
         security: accessTokenSecurity,
         responses: {
           "204": { description: "Avatar deleted." },
-          ...standardProtectedErrors,
+          ...protectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -287,7 +303,7 @@ export const openApiDocument = {
         ],
         responses: {
           "200": dataResponse("Meal plan.", schemaRef("MealPlan")),
-          ...standardProtectedErrors,
+          ...protectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -301,8 +317,7 @@ export const openApiDocument = {
         requestBody: jsonBody(schemaRef("MealPlanRequest")),
         responses: {
           "200": dataResponse("Meal plan created.", schemaRef("MealPlan")),
-          ...standardProtectedErrors,
-          "404": responseRef("NotFoundError"),
+          ...validatedProtectedErrors,
         },
       },
     },
@@ -316,7 +331,7 @@ export const openApiDocument = {
         requestBody: jsonBody(schemaRef("MealPlanRequest")),
         responses: {
           "200": dataResponse("Meal plan updated.", schemaRef("MealPlan")),
-          ...standardProtectedErrors,
+          ...validatedProtectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -337,8 +352,7 @@ export const openApiDocument = {
               data: schemaRef("MealPlan"),
             },
           }),
-          ...standardProtectedErrors,
-          "404": responseRef("NotFoundError"),
+          ...protectedErrors,
         },
       },
     },
@@ -354,7 +368,7 @@ export const openApiDocument = {
         ],
         responses: {
           "200": dataResponse("Dashboard data.", schemaRef("Dashboard")),
-          ...standardProtectedErrors,
+          ...validatedProtectedErrors,
           "404": responseRef("NotFoundError"),
         },
       },
@@ -373,7 +387,7 @@ export const openApiDocument = {
             ),
             headers: authCookieHeaders("admin", "set"),
           },
-          "400": responseRef("ValidationError"),
+          "400": responseRef("BadRequestOrValidationError"),
           "401": responseRef("UnauthorizedError"),
           "500": responseRef("InternalServerError"),
         },
@@ -390,8 +404,8 @@ export const openApiDocument = {
             description: "Logout successful.",
             headers: authCookieHeaders("admin", "clear"),
           },
+          "400": responseRef("BadRequestError"),
           "401": responseRef("UnauthorizedError"),
-          "403": responseRef("ForbiddenError"),
           "500": responseRef("InternalServerError"),
         },
       },
@@ -420,9 +434,8 @@ export const openApiDocument = {
         security: adminAccessTokenSecurity,
         responses: {
           "200": dataResponse("Administrator profile.", schemaRef("Admin")),
-          "400": responseRef("ValidationError"),
+          "400": responseRef("BadRequestError"),
           "401": responseRef("UnauthorizedError"),
-          "403": responseRef("ForbiddenError"),
           "500": responseRef("InternalServerError"),
         },
       },
@@ -455,7 +468,7 @@ export const openApiDocument = {
             type: "array",
             items: schemaRef("User"),
           }),
-          ...standardAdminErrors,
+          ...validatedAdminErrors,
         },
       },
       post: {
@@ -466,7 +479,7 @@ export const openApiDocument = {
         requestBody: jsonBody(schemaRef("CreateUserRequest")),
         responses: {
           "201": dataResponse("User created.", schemaRef("User")),
-          ...standardAdminErrors,
+          ...validatedAdminErrors,
         },
       },
     },
@@ -480,6 +493,7 @@ export const openApiDocument = {
         responses: {
           "200": dataResponse("User.", schemaRef("User")),
           ...standardAdminErrors,
+          "404": responseRef("NotFoundError"),
         },
       },
       delete: {
@@ -524,7 +538,7 @@ export const openApiDocument = {
               meals: { type: "array", items: schemaRef("Meal") },
             },
           }),
-          ...standardAdminErrors,
+          ...validatedAdminErrors,
         },
       },
       post: {
@@ -539,7 +553,7 @@ export const openApiDocument = {
             required: ["meal"],
             properties: { meal: schemaRef("Meal") },
           }),
-          ...standardAdminErrors,
+          ...validatedAdminErrors,
         },
       },
     },
@@ -571,7 +585,7 @@ export const openApiDocument = {
             required: ["meal"],
             properties: { meal: schemaRef("Meal") },
           }),
-          ...standardAdminErrors,
+          ...validatedAdminErrors,
         },
       },
       delete: {
@@ -582,7 +596,6 @@ export const openApiDocument = {
           "Warning: the current implementation does not apply administrator authentication to this route.",
         responses: {
           "204": { description: "Meal deleted." },
-          "404": responseRef("NotFoundError"),
           "500": responseRef("InternalServerError"),
         },
       },
@@ -676,10 +689,24 @@ export const openApiDocument = {
         properties: {
           error: {
             type: "object",
-            required: ["message", "code"],
+            required: ["message"],
             properties: {
               message: { type: "string" },
               code: { type: "string" },
+            },
+          },
+        },
+      },
+      ValidationError: {
+        type: "object",
+        required: ["error"],
+        properties: {
+          error: {
+            type: "object",
+            required: ["message", "code", "fields"],
+            properties: {
+              message: { type: "string" },
+              code: { type: "string", enum: ["VALIDATION_ERROR"] },
               fields: {
                 type: "object",
                 additionalProperties: { type: "string" },
@@ -945,16 +972,22 @@ export const openApiDocument = {
       },
     },
     responses: {
+      BadRequestError: jsonResponse(
+        "The request could not be processed.",
+        schemaRef("Error")
+      ),
+      BadRequestOrValidationError: jsonResponse(
+        "The request could not be processed or failed validation.",
+        {
+          oneOf: [schemaRef("Error"), schemaRef("ValidationError")],
+        }
+      ),
       ValidationError: jsonResponse(
         "The request failed validation.",
-        schemaRef("Error")
+        schemaRef("ValidationError")
       ),
       UnauthorizedError: jsonResponse(
         "Authentication is required or failed.",
-        schemaRef("Error")
-      ),
-      ForbiddenError: jsonResponse(
-        "The authenticated principal cannot access this resource.",
         schemaRef("Error")
       ),
       NotFoundError: jsonResponse(
