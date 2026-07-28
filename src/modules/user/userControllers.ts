@@ -10,7 +10,7 @@ import { HTTP_STATUS_CODES } from "@/config/consts.js";
 export const getCurrentUser = async (_req: Request, res: Response) => {
   const { userId } = res.locals?.auth;
   const user = await getUserByIdService(userId);
-  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: { ...user } });
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: user });
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -27,7 +27,7 @@ export const updateUser = async (req: Request, res: Response) => {
   });
   return res
     .status(HTTP_STATUS_CODES.SUCCESS)
-    .json({ message: "User updated successfully", data: { ...user } });
+    .json({ message: "User updated successfully", data: user });
 };
 
 export const updateUserAvatar = async (_req: Request, res: Response) => {
