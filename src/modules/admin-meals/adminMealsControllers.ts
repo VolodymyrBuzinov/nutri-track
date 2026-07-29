@@ -10,7 +10,6 @@ import {
 } from "./adminMealsServices.js";
 import { getMealByIdService, getMealsService } from "../meals/mealsService.js";
 import { SortOrder } from "@/generated/prisma/internal/prismaNamespace.js";
-import type { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
 
 export const getMealsAsAdmin = async (req: Request, res: Response) => {
   const { sortBy, sortOrder, search } = req.query;
