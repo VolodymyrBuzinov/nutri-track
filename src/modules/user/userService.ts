@@ -5,6 +5,7 @@ import { prisma } from "@/config/db/prisma.js";
 import { format } from "date-fns";
 import { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
 import { serviceClient } from "@/config/supabase.js";
+import { createImageSignedUrl } from "@/utils/storage.js";
 
 export const getUsersData = async () => {
   const users = await prisma.public_users.findMany();
@@ -69,8 +70,9 @@ export const updateUserAvatarService = async (
       error.message ?? "Failed to upload the image"
     );
   }
+
   return {
-    avatarUrl: `${process.env.SUPABASE_URL}/storage/v1/object/public/${storageData.fullPath}`,
+    avatarUrl: await createImageSignedUrl("users_avatars", storageData.path),
   };
 };
 

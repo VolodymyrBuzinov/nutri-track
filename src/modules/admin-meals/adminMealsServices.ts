@@ -5,6 +5,7 @@ import { AppError } from "@/services/appError.js";
 import { HTTP_STATUS_CODES } from "@/config/consts.js";
 import { serviceClient } from "@/config/supabase.js";
 import type { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
+import { createImageSignedUrl } from "@/utils/storage.js";
 
 export const createMealAsAdminService = async (meal: Omit<Meal, "id">) => {
   try {
@@ -66,8 +67,9 @@ export const uploadMealImageService = async (
       error.message ?? "Failed to upload the image"
     );
   }
+
   return {
-    imageUrl: storageData.fullPath,
+    imageUrl: await createImageSignedUrl("meals_images", storageData.path),
   };
 };
 
@@ -100,6 +102,6 @@ export const updateMealImageService = async (
   }
 
   return {
-    imageUrl: storageData.fullPath,
+    imageUrl: await createImageSignedUrl("meals_images", storageData.path),
   };
 };
