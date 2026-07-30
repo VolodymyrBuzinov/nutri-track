@@ -27,7 +27,7 @@ export const getMealsService = async ({
       },
     },
     orderBy: sortByFields[sortBy]
-      ? [{ [sortByFields[sortBy]]: sortOrder, id: sortOrder }]
+      ? [{ [sortByFields[sortBy]]: sortOrder }, { id: sortOrder }]
       : undefined,
   });
   return meals;
