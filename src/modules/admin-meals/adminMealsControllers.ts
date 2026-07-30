@@ -18,7 +18,7 @@ export const getMealsAsAdmin = async (req: Request, res: Response) => {
     sortOrder: sortOrder as SortOrder,
     search: search as string,
   });
-  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: { meals } });
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meals });
 };
 
 export const getMealByIdAsAdmin = async (req: Request, res: Response) => {
@@ -37,7 +37,7 @@ export const createMealAsAdmin = async (req: Request, res: Response) => {
     slug,
     imageUrl,
   });
-  return res.status(HTTP_STATUS_CODES.CREATED).json({ data: { meal } });
+  return res.status(HTTP_STATUS_CODES.CREATED).json({ data: meal });
 };
 
 export const updateMealAsAdmin = async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ export const updateMealAsAdmin = async (req: Request, res: Response) => {
     type,
     composition,
   });
-  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: { meal } });
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meal });
 };
 
 export const deleteMealAsAdmin = async (req: Request, res: Response) => {
