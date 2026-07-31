@@ -11,7 +11,7 @@ export const createImageSignedUrl = async (bucket: string, path: string) => {
 
   if (error) {
     throw new AppError(
-      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      HTTP_STATUS_CODES.BAD_REQUEST,
       error.message ?? "Failed to create image URL"
     );
   }

@@ -62,6 +62,14 @@ export const uploadMealImageService = async (
     });
 
   if (error) {
+    if (error.statusCode === "409") {
+      throw new AppError(
+        HTTP_STATUS_CODES.CONFLICT,
+        "A meal with this slug already exists",
+        "duplicate_slug"
+      );
+    }
+
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
       error.message ?? "Failed to upload the image"
