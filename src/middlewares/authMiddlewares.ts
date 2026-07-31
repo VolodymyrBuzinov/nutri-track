@@ -1,4 +1,9 @@
-import { ERROR_CODES, HTTP_STATUS_CODES, Role } from "@/config/consts.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+  Role,
+} from "@/config/consts.js";
 import { authVerifierClient } from "@/config/supabase.js";
 import { AppError } from "@/services/appError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
@@ -11,14 +16,14 @@ const getToken = (req: Request, role: Role) => {
   if (!token && !refreshToken) {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
-      "Unauthorized",
+      ERROR_MESSAGES.UNAUTHORIZED,
       ERROR_CODES.ACCESS_TOKEN_NOT_FOUND
     );
   }
   if (!token && refreshToken) {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
-      "Unauthorized",
+      ERROR_MESSAGES.UNAUTHORIZED,
       ERROR_CODES.INVALID_JWT
     );
   }
@@ -32,7 +37,7 @@ const getUserId = async (token: string) => {
   if (error || !userId) {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
-      "Unauthorized",
+      ERROR_MESSAGES.UNAUTHORIZED,
       error?.code ?? ERROR_CODES.INVALID_JWT
     );
   }
@@ -71,7 +76,7 @@ export const currentUserSessionMiddleware = (role: Role) =>
     if (!token && refreshToken) {
       throw new AppError(
         HTTP_STATUS_CODES.UNAUTHORIZED,
-        "Unauthorized",
+        ERROR_MESSAGES.UNAUTHORIZED,
         ERROR_CODES.INVALID_JWT
       );
     }

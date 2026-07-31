@@ -1,4 +1,8 @@
-import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
 import { AppError } from "@/services/appError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import express from "express";
@@ -34,7 +38,7 @@ export const validateImageUpload = asyncHandler(async (req, res, next) => {
   if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
     throw new AppError(
       HTTP_STATUS_CODES.BAD_REQUEST,
-      "Image is required",
+      ERROR_MESSAGES.IMAGE_REQUIRED,
       ERROR_CODES.IMAGE_REQUIRED
     );
   }
@@ -45,7 +49,7 @@ export const validateImageUpload = asyncHandler(async (req, res, next) => {
   if (!contentType || !ALLOWED_IMAGE_MIME_TYPES.includes(contentType)) {
     throw new AppError(
       HTTP_STATUS_CODES.BAD_REQUEST,
-      "File must be a JPEG, PNG, or WebP image",
+      ERROR_MESSAGES.INVALID_IMAGE_TYPE,
       ERROR_CODES.INVALID_IMAGE_TYPE
     );
   }

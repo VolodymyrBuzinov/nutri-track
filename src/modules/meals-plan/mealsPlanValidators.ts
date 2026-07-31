@@ -1,6 +1,6 @@
 import { parse, isValid } from "date-fns";
 import z from "zod";
-import { DATE_FORMAT } from "@/config/consts.js";
+import { DATE_FORMAT, ERROR_MESSAGES } from "@/config/consts.js";
 
 export const mealsPlanValidator = z.object({
   userId: z.string(),
@@ -10,10 +10,10 @@ export const mealsPlanValidator = z.object({
       return isValid(parsed);
     },
     {
-      message: `Invalid date format. Please use the format ${DATE_FORMAT}`,
+      message: ERROR_MESSAGES.INVALID_DATE_FORMAT,
     }
   ),
   meals: z
     .array(z.string())
-    .min(1, { message: "Meals plan must contain at least one meal" }),
+    .min(1, { message: ERROR_MESSAGES.MEALS_PLAN_EMPTY }),
 });

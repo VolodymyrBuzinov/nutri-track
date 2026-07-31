@@ -1,5 +1,10 @@
 import { AppError } from "@/services/appError.js";
-import { DATE_FORMAT, ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
+import {
+  DATE_FORMAT,
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
 import { User } from "@/modules/user/userTypes.js";
 import { prisma } from "@/config/db/prisma.js";
 import { format } from "date-fns";
@@ -21,7 +26,7 @@ export const getUserByIdService = async (userId: string) => {
   if (!user) {
     throw new AppError(
       HTTP_STATUS_CODES.NOT_FOUND,
-      "User not found",
+      ERROR_MESSAGES.USER_NOT_FOUND,
       ERROR_CODES.USER_NOT_FOUND
     );
   }
@@ -71,7 +76,7 @@ export const updateUserAvatarService = async (
   if (error) {
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-      error.message ?? "Failed to upload the image",
+      error.message ?? ERROR_MESSAGES.FAILED_TO_UPLOAD_AVATAR,
       ERROR_CODES.FAILED_TO_UPLOAD_AVATAR
     );
   }
@@ -89,7 +94,7 @@ export const deleteUserAvatarService = async (userId: string) => {
   if (error) {
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-      error.message ?? "Failed to delete the image",
+      error.message ?? ERROR_MESSAGES.FAILED_TO_DELETE_AVATAR,
       ERROR_CODES.FAILED_TO_DELETE_AVATAR
     );
   }

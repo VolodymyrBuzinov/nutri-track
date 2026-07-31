@@ -1,4 +1,8 @@
-import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
 import { createAuthClient, serviceClient } from "@/config/supabase.js";
 import { AppError } from "@/services/appError.js";
 import { getAdminService } from "../admin/adminServices.js";
@@ -25,7 +29,7 @@ export const loginAdminService = async (email: string, password: string) => {
     }
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
-      "User not found",
+      ERROR_MESSAGES.USER_NOT_FOUND,
       ERROR_CODES.USER_NOT_FOUND
     );
   }
@@ -49,7 +53,7 @@ export const logoutAdminService = async (accessToken: string) => {
   if (error) {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
-      error?.message ?? "Something went wrong",
+      error?.message ?? ERROR_MESSAGES.AUTHENTICATION_FAILED,
       error?.code ?? ERROR_CODES.AUTHENTICATION_FAILED
     );
   }

@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
 import { AppError } from "../services/appError.js";
 
 export const errorHandler = (
@@ -16,7 +20,7 @@ export const errorHandler = (
   ) {
     return res.status(HTTP_STATUS_CODES.PAYLOAD_TOO_LARGE).json({
       error: {
-        message: "Request body is too large",
+        message: ERROR_MESSAGES.PAYLOAD_TOO_LARGE,
         code: ERROR_CODES.PAYLOAD_TOO_LARGE,
       },
     });
@@ -35,7 +39,7 @@ export const errorHandler = (
     req.log.error({ err }, "Non-operational application error");
     return res.status(err.status).json({
       error: {
-        message: "Something went wrong",
+        message: ERROR_MESSAGES.UNEXPECTED_ERROR,
         code: err.code ?? ERROR_CODES.INTERNAL_ERROR,
       },
     });
@@ -44,7 +48,7 @@ export const errorHandler = (
   req.log.error({ err }, "Unhandled request error");
   return res.status(500).json({
     error: {
-      message: "Internal server error",
+      message: ERROR_MESSAGES.INTERNAL_ERROR,
       code: ERROR_CODES.INTERNAL_ERROR,
     },
   });

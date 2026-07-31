@@ -1,4 +1,8 @@
-import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
 import { NextFunction, Request, Response } from "express";
 import z, { ZodError } from "zod";
 
@@ -10,7 +14,7 @@ const formatZodError = (error: ZodError) => {
   }
 
   return {
-    message: error.issues[0]?.message ?? "Validation failed",
+    message: error.issues[0]?.message ?? ERROR_MESSAGES.VALIDATION_FAILED,
     code: ERROR_CODES.VALIDATION_ERROR,
     fields,
   };
