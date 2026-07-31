@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODES } from "@/config/consts.js";
+import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
 import { createAuthClient, serviceClient } from "@/config/supabase.js";
 import { AppError } from "@/services/appError.js";
 import { getAdminService } from "../admin/adminServices.js";
@@ -13,7 +13,7 @@ export const loginAdminService = async (email: string, password: string) => {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
       error?.message,
-      error?.code
+      error?.code ?? ERROR_CODES.AUTHENTICATION_FAILED
     );
   }
 
@@ -23,7 +23,11 @@ export const loginAdminService = async (email: string, password: string) => {
     if (data.session?.access_token) {
       await logoutAdminService(data.session.access_token);
     }
-    throw new AppError(HTTP_STATUS_CODES.UNAUTHORIZED, "User not found");
+    throw new AppError(
+      HTTP_STATUS_CODES.UNAUTHORIZED,
+      "User not found",
+      ERROR_CODES.USER_NOT_FOUND
+    );
   }
 
   return {
@@ -46,7 +50,7 @@ export const logoutAdminService = async (accessToken: string) => {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
       error?.message ?? "Something went wrong",
-      error?.code
+      error?.code ?? ERROR_CODES.AUTHENTICATION_FAILED
     );
   }
 };
@@ -60,7 +64,7 @@ export const refreshTokenAdminService = async (refreshToken: string) => {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
       error?.message,
-      error?.code
+      error?.code ?? ERROR_CODES.INVALID_JWT
     );
   }
   return {

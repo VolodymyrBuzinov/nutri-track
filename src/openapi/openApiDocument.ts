@@ -1,3 +1,5 @@
+import { ERROR_CODES } from "@/config/consts.js";
+
 const schemaRef = (name: string) => ({
   $ref: `#/components/schemas/${name}`,
 });
@@ -706,7 +708,7 @@ export const openApiDocument = {
             required: ["message", "code", "fields"],
             properties: {
               message: { type: "string" },
-              code: { type: "string", enum: ["VALIDATION_ERROR"] },
+              code: { type: "string", enum: [ERROR_CODES.VALIDATION_ERROR] },
               fields: {
                 type: "object",
                 additionalProperties: { type: "string" },

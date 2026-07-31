@@ -1,5 +1,5 @@
 import { AppError } from "@/services/appError.js";
-import { HTTP_STATUS_CODES } from "@/config/consts.js";
+import { ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
 import { SortOrder } from "@/generated/prisma/internal/prismaNamespace.js";
 import { prisma } from "@/config/db/prisma.js";
 
@@ -44,7 +44,8 @@ export const getMealByIdService = async (id: string) => {
   } catch (error) {
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-      (error as Error).message ?? "Failed to get meal"
+      (error as Error).message ?? "Failed to get meal",
+      ERROR_CODES.FAILED_TO_GET_MEAL
     );
   }
 };

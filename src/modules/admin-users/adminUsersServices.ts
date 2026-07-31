@@ -1,4 +1,4 @@
-import { DATE_FORMAT, HTTP_STATUS_CODES } from "@/config/consts.js";
+import { DATE_FORMAT, ERROR_CODES, HTTP_STATUS_CODES } from "@/config/consts.js";
 import { AppError } from "@/services/appError.js";
 import { serviceClient } from "@/config/supabase.js";
 import { prisma } from "@/config/db/prisma.js";
@@ -37,7 +37,11 @@ export const getUserByIdService = async (userId: string) => {
     },
   });
   if (!user) {
-    throw new AppError(HTTP_STATUS_CODES.NOT_FOUND, "User not found");
+    throw new AppError(
+      HTTP_STATUS_CODES.NOT_FOUND,
+      "User not found",
+      ERROR_CODES.USER_NOT_FOUND
+    );
   }
   return user;
 };
@@ -59,7 +63,7 @@ export const createUserAsAdminService = async (
     throw new AppError(
       HTTP_STATUS_CODES.BAD_REQUEST,
       authError?.message ?? "Failed to create user",
-      authError?.code
+      authError?.code ?? ERROR_CODES.FAILED_TO_CREATE_USER
     );
   }
 
@@ -103,7 +107,11 @@ export const createUserAsAdminService = async (
     await serviceClient.auth.admin.deleteUser(userId);
     const message =
       error instanceof Error ? error.message : "Failed to create user";
-    throw new AppError(HTTP_STATUS_CODES.BAD_REQUEST, message);
+    throw new AppError(
+      HTTP_STATUS_CODES.BAD_REQUEST,
+      message,
+      ERROR_CODES.FAILED_TO_CREATE_USER
+    );
   }
 };
 
@@ -113,7 +121,7 @@ export const deleteUserAsAdminService = async (userId: string) => {
     throw new AppError(
       HTTP_STATUS_CODES.BAD_REQUEST,
       error.message ?? "Failed to delete user",
-      error.code
+      error.code ?? ERROR_CODES.FAILED_TO_DELETE_USER
     );
   }
 };

@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODES, Role } from "@/config/consts.js";
+import { ERROR_CODES, HTTP_STATUS_CODES, Role } from "@/config/consts.js";
 import { authVerifierClient } from "@/config/supabase.js";
 import { AppError } from "@/services/appError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
@@ -7,13 +7,22 @@ import { getAdminService } from "@/modules/admin/adminServices.js";
 
 const getToken = (req: Request, role: Role) => {
   const token = req.cookies?.[`${role}AccessToken`];
-  if (!token) {
+  const refreshToken = req.cookies?.[`${role}RefreshToken`];
+  if (!token && !refreshToken) {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
       "Unauthorized",
-      `${role}_access_token_not_found`
+      ERROR_CODES.ACCESS_TOKEN_NOT_FOUND
     );
   }
+  if (!token && refreshToken) {
+    throw new AppError(
+      HTTP_STATUS_CODES.UNAUTHORIZED,
+      "Unauthorized",
+      ERROR_CODES.INVALID_JWT
+    );
+  }
+
   return token;
 };
 
@@ -24,7 +33,7 @@ const getUserId = async (token: string) => {
     throw new AppError(
       HTTP_STATUS_CODES.UNAUTHORIZED,
       "Unauthorized",
-      error?.code
+      error?.code ?? ERROR_CODES.INVALID_JWT
     );
   }
   return userId;
@@ -53,10 +62,20 @@ export const userAuthMiddleware = asyncHandler(
 export const currentUserSessionMiddleware = (role: Role) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.[`${role}AccessToken`];
+    const refreshToken = req.cookies?.[`${role}RefreshToken`];
 
-    if (!token) {
+    if (!token && !refreshToken) {
       return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: null });
     }
+
+    if (!token && refreshToken) {
+      throw new AppError(
+        HTTP_STATUS_CODES.UNAUTHORIZED,
+        "Unauthorized",
+        ERROR_CODES.INVALID_JWT
+      );
+    }
+
     const userId = await getUserId(token);
     role === "admin" && (await getAdminService(userId));
     res.locals.auth = { userId, role };
