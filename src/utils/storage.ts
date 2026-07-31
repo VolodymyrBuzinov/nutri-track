@@ -1,20 +1,9 @@
-import { HTTP_STATUS_CODES } from "@/config/consts.js";
 import { serviceClient } from "@/config/supabase.js";
-import { AppError } from "@/services/appError.js";
 
-const SIGNED_URL_TTL_SECONDS = 60 * 60;
-
-export const createImageSignedUrl = async (bucket: string, path: string) => {
-  const { data, error } = await serviceClient.storage
+export const createImageUrl = (bucket: string, path: string) => {
+  const publicUrl = serviceClient.storage
     .from(bucket)
-    .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
+    .getPublicUrl(path).data.publicUrl;
 
-  if (error) {
-    throw new AppError(
-      HTTP_STATUS_CODES.BAD_REQUEST,
-      error.message ?? "Failed to create image URL"
-    );
-  }
-
-  return data.signedUrl;
+  return `${publicUrl}?v=${Date.now()}`;
 };

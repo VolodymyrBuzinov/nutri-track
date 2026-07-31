@@ -5,7 +5,7 @@ import { prisma } from "@/config/db/prisma.js";
 import { format } from "date-fns";
 import { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
 import { serviceClient } from "@/config/supabase.js";
-import { createImageSignedUrl } from "@/utils/storage.js";
+import { createImageUrl } from "@/utils/storage.js";
 
 export const getUsersData = async () => {
   const users = await prisma.public_users.findMany();
@@ -72,7 +72,7 @@ export const updateUserAvatarService = async (
   }
 
   return {
-    avatarUrl: await createImageSignedUrl("users_avatars", storageData.path),
+    avatarUrl: createImageUrl("users_avatars", storageData.path),
   };
 };
 
