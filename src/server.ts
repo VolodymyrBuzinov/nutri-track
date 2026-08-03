@@ -40,7 +40,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 app.use("/users", userRoutes);
 app.use("/users/auth", userAuthRoutes);
-app.use("/users/meals", mealsRoutes);
+app.use("/meals", mealsRoutes);
 app.use("/users/meals-plan", mealsPlanRoutes);
 app.use("/users/dashboard", dashboardRoutes);
 app.use("/admin/auth", adminAuthRoutes);

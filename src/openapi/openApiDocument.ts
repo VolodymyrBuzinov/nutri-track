@@ -123,7 +123,7 @@ export const openApiDocument = {
     { name: "User authentication" },
     { name: "Users" },
     { name: "Meals" },
-    { name: "Meal plans" },
+    { name: "Meals plan" },
     { name: "Dashboard" },
     { name: "Admin authentication" },
     { name: "Admin profile" },
@@ -248,7 +248,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/meals": {
+    "/meals": {
       get: {
         operationId: "getMeals",
         tags: ["Meals"],
@@ -279,7 +279,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/meals/{id}": {
+    "/meals/{id}": {
       get: {
         operationId: "getMeal",
         tags: ["Meals"],
@@ -297,7 +297,7 @@ export const openApiDocument = {
     "/users/meals-plan": {
       get: {
         operationId: "getMealPlan",
-        tags: ["Meal plan"],
+        tags: ["Meals plan"],
         summary: "Get the authenticated user's meal plan for a date",
         security: accessTokenSecurity,
         parameters: [dateQueryParameter],
@@ -311,7 +311,7 @@ export const openApiDocument = {
       },
       post: {
         operationId: "createMealPlan",
-        tags: ["Meal plan"],
+        tags: ["Meals plan"],
         summary: "Create a meal plan",
         security: accessTokenSecurity,
         requestBody: jsonBody(schemaRef("MealPlanRequest")),
@@ -324,7 +324,7 @@ export const openApiDocument = {
     "/users/meals-plan/{planId}": {
       put: {
         operationId: "updateMealPlan",
-        tags: ["Meal plan"],
+        tags: ["Meals plan"],
         summary: "Replace a meal plan",
         security: accessTokenSecurity,
         parameters: [pathParameter("planId", "Meal plan identifier.")],
@@ -338,7 +338,7 @@ export const openApiDocument = {
     "/users/meals-plan/{planId}/reset": {
       patch: {
         operationId: "resetMealPlan",
-        tags: ["Meal plan"],
+        tags: ["Meals plan"],
         summary: "Remove all meals from a meal plan",
         security: accessTokenSecurity,
         parameters: [pathParameter("planId", "Meal plan identifier.")],
