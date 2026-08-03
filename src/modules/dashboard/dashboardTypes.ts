@@ -1,5 +1,12 @@
 import { Meal } from "../meals/mealsTypes.js";
 
+export type DashboardProfileField =
+  | "age"
+  | "weight"
+  | "gender"
+  | "height"
+  | "activityLevel";
+
 export type DashboardProgress = {
   calories: {
     consumed: number;
@@ -20,6 +27,8 @@ export type DashboardProgress = {
 };
 
 export interface Dashboard {
+  status: "ready" | "profile_incomplete";
+  missingProfileFields: DashboardProfileField[];
   progress: DashboardProgress | null;
   recommendedMeals: Meal[];
 }

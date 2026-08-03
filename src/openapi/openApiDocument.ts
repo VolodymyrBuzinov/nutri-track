@@ -932,12 +932,29 @@ export const openApiDocument = {
       },
       Dashboard: {
         type: "object",
-        required: ["progress", "recommendedMeals"],
+        required: [
+          "status",
+          "missingProfileFields",
+          "progress",
+          "recommendedMeals",
+        ],
         properties: {
-          progress: {
-            nullable: true,
-            allOf: [schemaRef("DashboardProgress")],
+          status: {
+            type: "string",
+            enum: ["ready", "profile_incomplete"],
+            description:
+              "Whether the user has supplied all profile values required for accurate nutrient targets.",
           },
+          missingProfileFields: {
+            type: "array",
+            description:
+              "Profile fields the user must complete before dashboard progress is available.",
+            items: {
+              type: "string",
+              enum: ["age", "weight", "gender", "height", "activityLevel"],
+            },
+          },
+          progress: schemaRef("DashboardProgress"),
           recommendedMeals: {
             type: "array",
             items: schemaRef("Meal"),

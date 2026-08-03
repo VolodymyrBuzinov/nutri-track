@@ -2,13 +2,17 @@ import { calculateUserNormaValues } from "@/utils/index.js";
 import { getMealsPlanByUserIdAndDateService } from "../meals-plan/mealsPlanServices.js";
 import { getMealsService } from "../meals/mealsService.js";
 import { getUserByIdService } from "../user/userService.js";
-import { ActivityLevel, Gender, User } from "../user/userTypes.js";
-import { Dashboard, DashboardProgress } from "./dashboardTypes.js";
+import { User } from "../user/userTypes.js";
+import {
+  Dashboard,
+  DashboardProfileField,
+  DashboardProgress,
+} from "./dashboardTypes.js";
 import { Meal } from "../meals/mealsTypes.js";
 
 const fallbackNegativeValue = (value: number) => (value < 0 ? 0 : value);
 
-const PROFILE_FIELDS = [
+const PROFILE_FIELDS: DashboardProfileField[] = [
   "age",
   "weight",
   "gender",
@@ -16,8 +20,23 @@ const PROFILE_FIELDS = [
   "activityLevel",
 ] as const;
 
-const isProfileComplete = (user: User) =>
-  PROFILE_FIELDS.every((field) => user[field] != null);
+const isProfileFieldFilled = (value: unknown) =>
+  typeof value === "number"
+    ? Number.isFinite(value) && value > 0
+    : typeof value === "string" && value.trim().length > 0;
+
+const getProfileStatus = (
+  profile: Record<DashboardProfileField, unknown>
+): Pick<Dashboard, "status" | "missingProfileFields"> => {
+  const missingProfileFields = PROFILE_FIELDS.filter(
+    (field) => !isProfileFieldFilled(profile[field])
+  );
+
+  return {
+    status: missingProfileFields.length ? "profile_incomplete" : "ready",
+    missingProfileFields,
+  };
+};
 
 const calculateProgress = (meals: Meal[], user: User): DashboardProgress => {
   const norms = calculateUserNormaValues(user);
@@ -60,7 +79,7 @@ const findRecommendedMeals = async (
   meals: Meal[],
   progress: DashboardProgress
 ): Promise<Meal[]> => {
-  if (progress.calories.remaining <= 0) {
+  if (progress.calories.remaining <= 0 || !meals.length) {
     return [];
   }
 
@@ -100,33 +119,20 @@ export const getDashboardService = async (
   date: string
 ): Promise<Dashboard> => {
   const user = await getUserByIdService(userId);
-
-  if (
-    !isProfileComplete({
-      ...user,
-      gender: user.gender as Gender,
-      activityLevel: user.activityLevel as ActivityLevel,
-      avatarUrl: user.avatarUrl ?? "",
-    })
-  ) {
-    return { progress: null, recommendedMeals: [] };
-  }
+  const profileStatus = getProfileStatus({
+    age: user.age,
+    weight: user.weight,
+    gender: user.gender,
+    height: user.height,
+    activityLevel: user.activityLevel,
+  });
 
   const mealsPlan = await getMealsPlanByUserIdAndDateService(userId, date);
+  const meals = !mealsPlan ? [] : (mealsPlan.meals as unknown as Meal[]);
 
-  if (!mealsPlan) {
-    return { progress: null, recommendedMeals: [] };
-  }
+  const progress = calculateProgress(meals, user as unknown as User);
 
-  const progress = calculateProgress(
-    mealsPlan.meals as unknown as Meal[],
-    user as unknown as User
-  );
+  const recommendedMeals = await findRecommendedMeals(meals, progress);
 
-  const recommendedMeals = await findRecommendedMeals(
-    mealsPlan.meals as unknown as Meal[],
-    progress
-  );
-
-  return { progress, recommendedMeals };
+  return { ...profileStatus, progress, recommendedMeals };
 };
