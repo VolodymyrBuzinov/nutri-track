@@ -173,7 +173,8 @@ export const openApiDocument = {
         security: userRefreshTokenSecurity,
         responses: {
           "200": {
-            description: "Session refreshed and authentication cookies rotated.",
+            description:
+              "Session refreshed and authentication cookies rotated.",
             headers: authCookieHeaders("user", "set"),
           },
           "401": responseRef("UnauthorizedError"),
@@ -304,9 +305,11 @@ export const openApiDocument = {
           { ...dateQueryParameter, required: false },
         ],
         responses: {
-          "200": dataResponse("Meal plan.", schemaRef("MealPlan")),
+          "200": dataResponse("Meal plan, or null when it does not exist.", {
+            nullable: true,
+            allOf: [schemaRef("MealPlan")],
+          }),
           ...protectedErrors,
-          "404": responseRef("NotFoundError"),
         },
       },
     },
@@ -366,9 +369,14 @@ export const openApiDocument = {
         security: accessTokenSecurity,
         parameters: [dateQueryParameter],
         responses: {
-          "200": dataResponse("Dashboard data.", schemaRef("Dashboard")),
+          "200": dataResponse(
+            "Dashboard data, or nullish progress when the user has no meal plan for the date.",
+            {
+              nullable: true,
+              allOf: [schemaRef("Dashboard")],
+            }
+          ),
           ...validatedProtectedErrors,
-          "404": responseRef("NotFoundError"),
         },
       },
     },
@@ -417,7 +425,8 @@ export const openApiDocument = {
         security: adminRefreshTokenSecurity,
         responses: {
           "200": {
-            description: "Session refreshed and authentication cookies rotated.",
+            description:
+              "Session refreshed and authentication cookies rotated.",
             headers: authCookieHeaders("admin", "set"),
           },
           "401": responseRef("UnauthorizedError"),
@@ -671,7 +680,8 @@ export const openApiDocument = {
         type: "apiKey",
         in: "cookie",
         name: "adminAccessToken",
-        description: "HttpOnly Supabase access token for an administrator session.",
+        description:
+          "HttpOnly Supabase access token for an administrator session.",
       },
       adminRefreshToken: {
         type: "apiKey",
@@ -789,13 +799,7 @@ export const openApiDocument = {
       },
       MealComposition: {
         type: "object",
-        required: [
-          "calories",
-          "protein",
-          "carbohydrates",
-          "fat",
-          "products",
-        ],
+        required: ["calories", "protein", "carbohydrates", "fat", "products"],
         properties: {
           calories: { type: "number" },
           protein: { type: "number" },

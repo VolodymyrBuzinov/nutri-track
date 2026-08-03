@@ -114,6 +114,10 @@ export const getDashboardService = async (
 
   const mealsPlan = await getMealsPlanByUserIdAndDateService(userId, date);
 
+  if (!mealsPlan) {
+    return { progress: null, recommendedMeals: [] };
+  }
+
   const progress = calculateProgress(
     mealsPlan.meals as unknown as Meal[],
     user as unknown as User

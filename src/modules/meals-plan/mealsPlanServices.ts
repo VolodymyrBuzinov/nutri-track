@@ -1,9 +1,3 @@
-import { AppError } from "@/services/appError.js";
-import {
-  ERROR_CODES,
-  ERROR_MESSAGES,
-  HTTP_STATUS_CODES,
-} from "@/config/consts.js";
 import { prisma } from "@/config/db/prisma.js";
 
 export const getMealsPlanByUserIdAndDateService = async (
@@ -17,13 +11,7 @@ export const getMealsPlanByUserIdAndDateService = async (
     },
   });
 
-  if (!plan) {
-    throw new AppError(
-      HTTP_STATUS_CODES.NOT_FOUND,
-      ERROR_MESSAGES.MEALS_PLAN_NOT_FOUND,
-      ERROR_CODES.MEALS_PLAN_NOT_FOUND
-    );
-  }
+  if (!plan) return null;
 
   const planMeals = await prisma.meals_plan_items.findMany({
     where: {
