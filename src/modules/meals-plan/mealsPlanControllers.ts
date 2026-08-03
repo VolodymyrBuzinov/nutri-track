@@ -7,11 +7,11 @@ import {
   updateMealsPlanService,
 } from "./mealsPlanServices.js";
 
-export const getMealsPlanByUserId = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+export const getMealsUserPlan = async (req: Request, res: Response) => {
+  const { userId } = res.locals.auth;
   const { date } = req.query;
   const mealsPlan = await getMealsPlanByUserIdAndDateService(
-    userId as string,
+    userId,
     String(date)
   );
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: mealsPlan });
@@ -24,7 +24,8 @@ export const createMealsPlan = async (req: Request, res: Response) => {
 };
 
 export const updateMealsPlan = async (req: Request, res: Response) => {
-  const { userId, meals, date } = req.body;
+  const { meals, date } = req.body;
+  const { userId } = res.locals.auth;
   const { planId } = req.params;
   const mealsPlan = await updateMealsPlanService(
     planId as string,

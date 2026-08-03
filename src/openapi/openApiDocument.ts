@@ -294,16 +294,13 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/meals-plan/{userId}": {
+    "/users/meals-plan": {
       get: {
         operationId: "getMealPlan",
-        tags: ["Meal plans"],
-        summary: "Get a user's meal plan for a date",
+        tags: ["Meal plan"],
+        summary: "Get the authenticated user's meal plan for a date",
         security: accessTokenSecurity,
-        parameters: [
-          pathParameter("userId", "User identifier."),
-          { ...dateQueryParameter, required: false },
-        ],
+        parameters: [dateQueryParameter],
         responses: {
           "200": dataResponse("Meal plan, or null when it does not exist.", {
             nullable: true,
@@ -312,11 +309,9 @@ export const openApiDocument = {
           ...protectedErrors,
         },
       },
-    },
-    "/users/meals-plan": {
       post: {
         operationId: "createMealPlan",
-        tags: ["Meal plans"],
+        tags: ["Meal plan"],
         summary: "Create a meal plan",
         security: accessTokenSecurity,
         requestBody: jsonBody(schemaRef("MealPlanRequest")),
@@ -329,7 +324,7 @@ export const openApiDocument = {
     "/users/meals-plan/{planId}": {
       put: {
         operationId: "updateMealPlan",
-        tags: ["Meal plans"],
+        tags: ["Meal plan"],
         summary: "Replace a meal plan",
         security: accessTokenSecurity,
         parameters: [pathParameter("planId", "Meal plan identifier.")],
@@ -337,14 +332,13 @@ export const openApiDocument = {
         responses: {
           "200": dataResponse("Meal plan updated.", schemaRef("MealPlan")),
           ...validatedProtectedErrors,
-          "404": responseRef("NotFoundError"),
         },
       },
     },
     "/users/meals-plan/{planId}/reset": {
       patch: {
         operationId: "resetMealPlan",
-        tags: ["Meal plans"],
+        tags: ["Meal plan"],
         summary: "Remove all meals from a meal plan",
         security: accessTokenSecurity,
         parameters: [pathParameter("planId", "Meal plan identifier.")],
@@ -884,9 +878,8 @@ export const openApiDocument = {
       },
       MealPlanRequest: {
         type: "object",
-        required: ["userId", "date", "meals"],
+        required: ["date", "meals"],
         properties: {
-          userId: { type: "string", format: "uuid" },
           date: {
             type: "string",
             format: "date",

@@ -3,7 +3,7 @@ import express from "express";
 import {
   createMealsPlan,
   resetMealsPlan,
-  getMealsPlanByUserId,
+  getMealsUserPlan,
   updateMealsPlan,
 } from "./mealsPlanControllers.js";
 import { validateSchema } from "@/utils/validation.js";
@@ -12,11 +12,7 @@ import { userAuthMiddleware } from "@/middlewares/authMiddlewares.js";
 
 export const mealsPlanRoutes = express.Router();
 
-mealsPlanRoutes.get(
-  "/:userId",
-  userAuthMiddleware,
-  asyncHandler(getMealsPlanByUserId)
-);
+mealsPlanRoutes.get("/", userAuthMiddleware, asyncHandler(getMealsUserPlan));
 mealsPlanRoutes.post(
   "/",
   userAuthMiddleware,
