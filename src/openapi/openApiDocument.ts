@@ -247,7 +247,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals": {
+    "/users/meals": {
       get: {
         operationId: "getMeals",
         tags: ["Meals"],
@@ -278,7 +278,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals/{id}": {
+    "/users/meals/{id}": {
       get: {
         operationId: "getMeal",
         tags: ["Meals"],
@@ -293,7 +293,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals-plan/{userId}": {
+    "/users/meals-plan/{userId}": {
       get: {
         operationId: "getMealPlan",
         tags: ["Meal plans"],
@@ -310,7 +310,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals-plan": {
+    "/users/meals-plan": {
       post: {
         operationId: "createMealPlan",
         tags: ["Meal plans"],
@@ -323,7 +323,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals-plan/{planId}": {
+    "/users/meals-plan/{planId}": {
       put: {
         operationId: "updateMealPlan",
         tags: ["Meal plans"],
@@ -338,7 +338,7 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals-plan/{planId}/reset": {
+    "/users/meals-plan/{planId}/reset": {
       patch: {
         operationId: "resetMealPlan",
         tags: ["Meal plans"],
@@ -358,16 +358,13 @@ export const openApiDocument = {
         },
       },
     },
-    "/dashboard/{userId}": {
+    "/users/dashboard": {
       get: {
         operationId: "getDashboard",
         tags: ["Dashboard"],
         summary: "Get dashboard data for a date",
         security: accessTokenSecurity,
-        parameters: [
-          pathParameter("userId", "User identifier."),
-          dateQueryParameter,
-        ],
+        parameters: [dateQueryParameter],
         responses: {
           "200": dataResponse("Dashboard data.", schemaRef("Dashboard")),
           ...validatedProtectedErrors,

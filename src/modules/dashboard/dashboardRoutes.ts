@@ -8,7 +8,7 @@ import { dashboardValidator } from "./dashboardValidators.js";
 export const dashboardRoutes = express.Router();
 
 dashboardRoutes.get(
-  "/:userId",
+  "/",
   userAuthMiddleware,
   validateQuerySchema(dashboardValidator),
   asyncHandler(getDashboard)
