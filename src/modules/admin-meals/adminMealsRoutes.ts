@@ -4,7 +4,7 @@ import {
   createMealAsAdmin,
   deleteMealAsAdmin,
   deleteMealImage,
-  getMealByIdAsAdmin,
+  getMealBySlugAsAdmin,
   getMealsAsAdmin,
   updateMealAsAdmin,
   updateMealImage,
@@ -32,9 +32,9 @@ adminMealsRoutes.get(
 );
 
 adminMealsRoutes.get(
-  "/:mealId",
+  "/:mealSlug",
   adminAuthMiddleware,
-  asyncHandler(getMealByIdAsAdmin)
+  asyncHandler(getMealBySlugAsAdmin)
 );
 adminMealsRoutes.post(
   "/",
@@ -44,13 +44,13 @@ adminMealsRoutes.post(
 );
 
 adminMealsRoutes.patch(
-  "/:mealId",
+  "/:mealSlug",
   adminAuthMiddleware,
   validateSchema(updateMealAsAdminValidator),
   asyncHandler(updateMealAsAdmin)
 );
 
-adminMealsRoutes.delete("/:mealId", asyncHandler(deleteMealAsAdmin));
+adminMealsRoutes.delete("/:mealSlug", asyncHandler(deleteMealAsAdmin));
 
 adminMealsRoutes.post(
   "/:mealSlug/image",

@@ -37,11 +37,11 @@ export const getMealsService = async ({
   return meals;
 };
 
-export const getMealByIdService = async (id: string) => {
+export const getMealBySlugService = async (slug: string) => {
   try {
     const meal = await prisma.meals.findUnique({
       where: {
-        id,
+        slug,
       },
     });
     return meal;

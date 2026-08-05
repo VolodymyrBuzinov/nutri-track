@@ -279,18 +279,19 @@ export const openApiDocument = {
         },
       },
     },
-    "/meals/{id}": {
+    "/meals/{slug}": {
       get: {
-        operationId: "getMeal",
+        operationId: "getMealBySlug",
         tags: ["Meals"],
-        summary: "Get a meal",
-        parameters: [pathParameter("id", "Meal identifier.")],
+        summary: "Get a meal by slug",
+        security: accessTokenSecurity,
+        parameters: [pathParameter("slug", "Meal slug.")],
         responses: {
           "200": dataResponse("Meal or null when it does not exist.", {
             nullable: true,
             allOf: [schemaRef("Meal")],
           }),
-          "500": responseRef("InternalServerError"),
+          ...protectedErrors,
         },
       },
     },
@@ -559,12 +560,12 @@ export const openApiDocument = {
         },
       },
     },
-    "/admin/meals/{mealId}": {
-      parameters: [pathParameter("mealId", "Meal identifier.")],
+    "/admin/meals/{mealSlug}": {
+      parameters: [pathParameter("mealSlug", "Meal slug.")],
       get: {
-        operationId: "adminGetMeal",
+        operationId: "adminGetMealBySlug",
         tags: ["Admin meals"],
-        summary: "Get a meal for administration",
+        summary: "Get a meal by slug for administration",
         security: adminAccessTokenSecurity,
         responses: {
           "200": dataResponse("Meal.", {

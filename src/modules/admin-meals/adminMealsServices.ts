@@ -1,5 +1,5 @@
 import { prisma } from "@/config/db/prisma.js";
-import { getMealByIdService } from "../meals/mealsService.js";
+import { getMealBySlugService } from "../meals/mealsService.js";
 import { Meal } from "../meals/mealsTypes.js";
 import { AppError } from "@/services/appError.js";
 import {
@@ -27,13 +27,13 @@ export const createMealAsAdminService = async (meal: Omit<Meal, "id">) => {
 };
 
 export const updateMealAsAdminService = async (
-  mealId: string,
+  mealSlug: string,
   updatedFields: Partial<Omit<Meal, "id">>
 ) => {
-  const existingMeal = await getMealByIdService(mealId);
+  const existingMeal = await getMealBySlugService(mealSlug);
   const newMeal = await prisma.meals.update({
     where: {
-      id: mealId,
+      slug: mealSlug,
     },
     data: {
       ...updatedFields,
@@ -47,11 +47,11 @@ export const updateMealAsAdminService = async (
   return newMeal;
 };
 
-export const deleteMealAsAdminService = async (mealId: string) => {
-  await getMealByIdService(mealId);
+export const deleteMealAsAdminService = async (mealSlug: string) => {
+  await getMealBySlugService(mealSlug);
   await prisma.meals.delete({
     where: {
-      id: mealId,
+      slug: mealSlug,
     },
   });
 };
