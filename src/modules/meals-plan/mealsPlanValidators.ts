@@ -12,7 +12,5 @@ export const mealsPlanValidator = z.object({
       message: ERROR_MESSAGES.INVALID_DATE_FORMAT,
     }
   ),
-  meals: z
-    .array(z.string())
-    .min(1, { message: ERROR_MESSAGES.MEALS_PLAN_EMPTY }),
+  meals: z.array(z.string()),
 });

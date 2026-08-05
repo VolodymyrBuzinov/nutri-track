@@ -18,7 +18,8 @@ export const getMealsUserPlan = async (req: Request, res: Response) => {
 };
 
 export const createMealsPlan = async (req: Request, res: Response) => {
-  const { userId, meals, date } = req.body;
+  const { userId } = res.locals.auth;
+  const { meals, date } = req.body;
   const mealsPlan = await createMealsPlanService(userId as string, meals, date);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: mealsPlan });
 };

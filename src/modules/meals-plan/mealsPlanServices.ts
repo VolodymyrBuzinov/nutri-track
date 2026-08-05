@@ -56,18 +56,38 @@ export const updateMealsPlanService = async (
   mealsIds: string[],
   date: string
 ) => {
-  await prisma.meals_plans.update({
+  const meals = await prisma.meals.findMany({
     where: {
-      id: planId,
-    },
-    data: {
-      meals_plan_items: {
-        create: mealsIds.map((mealId) => ({
-          meal_id: mealId,
-        })),
+      id: {
+        in: mealsIds,
       },
     },
+    select: {
+      id: true,
+      type: true,
+    },
   });
+
+  const mealTypes = meals.map((meal) => meal.type);
+
+  await prisma.$transaction([
+    prisma.meals_plan_items.deleteMany({
+      where: {
+        meals_plan_id: planId,
+        meals: {
+          type: {
+            in: mealTypes,
+          },
+        },
+      },
+    }),
+    prisma.meals_plan_items.createMany({
+      data: meals.map((meal) => ({
+        meals_plan_id: planId,
+        meal_id: meal.id,
+      })),
+    }),
+  ]);
 
   return getMealsPlanByUserIdAndDateService(userId, date);
 };
