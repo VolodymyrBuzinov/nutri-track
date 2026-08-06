@@ -53,7 +53,6 @@ export const resetMealsPlan = async (req: Request, res: Response) => {
   const { planId } = req.params;
   const mealsPlan = await resetMealsPlanService(planId as string);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({
-    message: "Meals plan reset successfully",
     data: mealsPlan,
   });
 };

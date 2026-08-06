@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from "@/config/consts.js";
+import { DATE_FORMAT, ERROR_MESSAGES } from "@/config/consts.js";
 import { isValid, parse } from "date-fns";
 import z from "zod";
 
@@ -9,7 +9,7 @@ export const dashboardValidator = z.object({
       return isValid(parsed);
     },
     {
-      message: `Invalid date format. Please use the format ${DATE_FORMAT}`,
+      message: ERROR_MESSAGES.INVALID_DATE_FORMAT,
     }
   ),
 });

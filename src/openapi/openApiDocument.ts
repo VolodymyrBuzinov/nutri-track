@@ -203,9 +203,8 @@ export const openApiDocument = {
         responses: {
           "200": jsonResponse("User profile updated.", {
             type: "object",
-            required: ["message", "data"],
+            required: ["data"],
             properties: {
-              message: { type: "string" },
               data: schemaRef("User"),
             },
           }),
@@ -347,9 +346,8 @@ export const openApiDocument = {
         responses: {
           "200": jsonResponse("Meal plan reset.", {
             type: "object",
-            required: ["message", "data"],
+            required: ["data"],
             properties: {
-              message: { type: "string" },
               data: schemaRef("MealPlan"),
             },
           }),

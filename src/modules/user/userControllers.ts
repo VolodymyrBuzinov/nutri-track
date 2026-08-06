@@ -25,9 +25,7 @@ export const updateUser = async (req: Request, res: Response) => {
     height,
     activityLevel,
   });
-  return res
-    .status(HTTP_STATUS_CODES.SUCCESS)
-    .json({ message: "User updated successfully", data: user });
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: user });
 };
 
 export const updateUserAvatar = async (_req: Request, res: Response) => {
