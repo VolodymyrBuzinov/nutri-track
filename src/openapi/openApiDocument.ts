@@ -253,6 +253,7 @@ export const openApiDocument = {
         operationId: "getMeals",
         tags: ["Meals"],
         summary: "List meals",
+        security: accessTokenSecurity,
         parameters: [
           {
             name: "sortBy",
@@ -275,7 +276,7 @@ export const openApiDocument = {
             type: "array",
             items: schemaRef("Meal"),
           }),
-          "500": responseRef("InternalServerError"),
+          ...protectedErrors,
         },
       },
     },
@@ -353,6 +354,23 @@ export const openApiDocument = {
             },
           }),
           ...protectedErrors,
+        },
+      },
+    },
+    "/users/meals-plan/{planId}/items/{planItemId}": {
+      delete: {
+        operationId: "deleteMealPlanItem",
+        tags: ["Meals plan"],
+        summary: "Remove a single meal from a meal plan",
+        security: accessTokenSecurity,
+        parameters: [
+          pathParameter("planId", "Meal plan identifier."),
+          pathParameter("planItemId", "Meal plan item identifier."),
+        ],
+        responses: {
+          "200": dataResponse("Meal plan item removed.", schemaRef("MealPlan")),
+          ...protectedErrors,
+          "404": responseRef("NotFoundError"),
         },
       },
     },

@@ -1,4 +1,10 @@
 import { prisma } from "@/config/db/prisma.js";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS_CODES,
+} from "@/config/consts.js";
+import { AppError } from "@/services/appError.js";
 
 export const getMealsPlanByUserIdAndDateService = async (
   userId: string,
@@ -90,6 +96,50 @@ export const updateMealsPlanService = async (
   ]);
 
   return getMealsPlanByUserIdAndDateService(userId, date);
+};
+
+export const deleteMealsPlanItemService = async (
+  planId: string,
+  planItemId: string,
+  userId: string
+) => {
+  const plan = await prisma.meals_plans.findFirst({
+    where: {
+      id: planId,
+      user_id: userId,
+    },
+  });
+
+  if (!plan) {
+    throw new AppError(
+      HTTP_STATUS_CODES.NOT_FOUND,
+      ERROR_MESSAGES.MEALS_PLAN_NOT_FOUND,
+      ERROR_CODES.MEALS_PLAN_NOT_FOUND
+    );
+  }
+
+  const planItem = await prisma.meals_plan_items.findFirst({
+    where: {
+      id: planItemId,
+      meals_plan_id: planId,
+    },
+  });
+
+  if (!planItem) {
+    throw new AppError(
+      HTTP_STATUS_CODES.NOT_FOUND,
+      ERROR_MESSAGES.FAILED_TO_DELETE_MEAL_FROM_PLAN,
+      ERROR_CODES.FAILED_TO_DELETE_MEAL_FROM_PLAN
+    );
+  }
+
+  await prisma.meals_plan_items.delete({
+    where: {
+      id: planItemId,
+    },
+  });
+
+  return getMealsPlanByUserIdAndDateService(userId, plan.date);
 };
 
 export const resetMealsPlanService = async (id: string) => {

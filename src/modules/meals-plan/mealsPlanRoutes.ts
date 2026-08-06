@@ -5,6 +5,7 @@ import {
   resetMealsPlan,
   getMealsUserPlan,
   updateMealsPlan,
+  deleteMealsPlanItem,
 } from "./mealsPlanControllers.js";
 import { validateSchema } from "@/utils/validation.js";
 import { mealsPlanValidator } from "./mealsPlanValidators.js";
@@ -25,8 +26,15 @@ mealsPlanRoutes.put(
   validateSchema(mealsPlanValidator),
   asyncHandler(updateMealsPlan)
 );
+
 mealsPlanRoutes.patch(
   "/:planId/reset",
   userAuthMiddleware,
   asyncHandler(resetMealsPlan)
+);
+
+mealsPlanRoutes.delete(
+  "/:planId/items/:planItemId",
+  userAuthMiddleware,
+  asyncHandler(deleteMealsPlanItem)
 );
