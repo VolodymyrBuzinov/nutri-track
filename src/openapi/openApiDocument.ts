@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "@/config/consts.js";
+import { ERROR_CODES, PROFILE_FIELDS_DICTIONARY } from "@/config/consts.js";
 
 const schemaRef = (name: string) => ({
   $ref: `#/components/schemas/${name}`,
@@ -960,10 +960,10 @@ export const openApiDocument = {
           missingProfileFields: {
             type: "array",
             description:
-              "Profile fields the user must complete before dashboard progress is available.",
+              "Localized labels of profile fields the user must complete before dashboard progress is meaningful.",
             items: {
               type: "string",
-              enum: ["age", "weight", "gender", "height", "activityLevel"],
+              enum: Object.values(PROFILE_FIELDS_DICTIONARY),
             },
           },
           progress: schemaRef("DashboardProgress"),

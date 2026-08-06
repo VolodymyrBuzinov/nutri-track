@@ -28,7 +28,7 @@ export type DashboardProgress = {
 
 export interface Dashboard {
   status: "ready" | "profile_incomplete";
-  missingProfileFields: DashboardProfileField[];
+  missingProfileFields: string[];
   progress: DashboardProgress | null;
   recommendedMeals: Meal[];
 }

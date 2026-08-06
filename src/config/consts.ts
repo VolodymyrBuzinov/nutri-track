@@ -19,6 +19,14 @@ export const ROLES = ["user", "admin"] as const;
 
 export type Role = (typeof ROLES)[number];
 
+export const PROFILE_FIELDS_DICTIONARY = {
+  age: "Вік",
+  weight: "Вага",
+  gender: "Стать",
+  height: "Зріст",
+  activityLevel: "Рівень активності",
+} as const;
+
 export const ERROR_CODES = {
   ACCESS_TOKEN_NOT_FOUND: "access_token_not_found",
   INVALID_JWT: "invalid_jwt",

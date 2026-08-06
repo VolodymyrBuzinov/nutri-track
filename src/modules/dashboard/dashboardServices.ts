@@ -9,6 +9,7 @@ import {
   DashboardProgress,
 } from "./dashboardTypes.js";
 import { Meal } from "../meals/mealsTypes.js";
+import { PROFILE_FIELDS_DICTIONARY } from "@/config/consts.js";
 
 const fallbackNegativeValue = (value: number) => (value < 0 ? 0 : value);
 
@@ -34,7 +35,9 @@ const getProfileStatus = (
 
   return {
     status: missingProfileFields.length ? "profile_incomplete" : "ready",
-    missingProfileFields,
+    missingProfileFields: missingProfileFields.map(
+      (field) => PROFILE_FIELDS_DICTIONARY[field]
+    ),
   };
 };
 
