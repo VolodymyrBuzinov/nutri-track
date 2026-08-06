@@ -100,7 +100,7 @@ export const updateMealsPlanService = async (
 
 export const deleteMealsPlanItemService = async (
   planId: string,
-  planItemId: string,
+  mealId: string,
   userId: string
 ) => {
   const plan = await prisma.meals_plans.findFirst({
@@ -120,7 +120,7 @@ export const deleteMealsPlanItemService = async (
 
   const planItem = await prisma.meals_plan_items.findFirst({
     where: {
-      id: planItemId,
+      meal_id: mealId,
       meals_plan_id: planId,
     },
   });
@@ -135,7 +135,7 @@ export const deleteMealsPlanItemService = async (
 
   await prisma.meals_plan_items.delete({
     where: {
-      id: planItemId,
+      id: planItem.id,
     },
   });
 

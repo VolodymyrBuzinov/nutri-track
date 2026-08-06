@@ -39,11 +39,11 @@ export const updateMealsPlan = async (req: Request, res: Response) => {
 };
 
 export const deleteMealsPlanItem = async (req: Request, res: Response) => {
-  const { planId, planItemId } = req.params;
+  const { planId, mealId } = req.params;
   const { userId } = res.locals.auth;
   const mealsPlan = await deleteMealsPlanItemService(
     planId as string,
-    planItemId as string,
+    mealId as string,
     userId as string
   );
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: mealsPlan });

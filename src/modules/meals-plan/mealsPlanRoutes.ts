@@ -34,7 +34,7 @@ mealsPlanRoutes.patch(
 );
 
 mealsPlanRoutes.delete(
-  "/:planId/items/:planItemId",
+  "/:planId/meals/:mealId",
   userAuthMiddleware,
   asyncHandler(deleteMealsPlanItem)
 );

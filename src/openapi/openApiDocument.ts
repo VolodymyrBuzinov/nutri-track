@@ -357,18 +357,18 @@ export const openApiDocument = {
         },
       },
     },
-    "/users/meals-plan/{planId}/items/{planItemId}": {
+    "/users/meals-plan/{planId}/meals/{mealId}": {
       delete: {
-        operationId: "deleteMealPlanItem",
+        operationId: "deleteMealFromPlan",
         tags: ["Meals plan"],
-        summary: "Remove a single meal from a meal plan",
+        summary: "Remove a meal from a meal plan by meal identifier",
         security: accessTokenSecurity,
         parameters: [
           pathParameter("planId", "Meal plan identifier."),
-          pathParameter("planItemId", "Meal plan item identifier."),
+          pathParameter("mealId", "Meal identifier."),
         ],
         responses: {
-          "200": dataResponse("Meal plan item removed.", schemaRef("MealPlan")),
+          "200": dataResponse("Meal removed from plan.", schemaRef("MealPlan")),
           ...protectedErrors,
           "404": responseRef("NotFoundError"),
         },
