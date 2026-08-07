@@ -1,19 +1,11 @@
-import { HTTP_STATUS_CODES } from "@/config/consts.js";
-import { ActivityLevel, Gender, User } from "@/modules/user/userTypes.js";
-import { AppError } from "@/services/appError.js";
+import { Gender, User } from "@/modules/user/userTypes.js";
 import { CookieOptions, Response } from "express";
 
 type AuthRole = "user" | "admin";
 
-const ACTIVITY_MULTIPLIERS: Record<string, number> = {
-  малий: 1.2,
-  середній: 1.55,
-  високий: 1.725,
-};
-
-const GENDER_BASE: Record<string, (base: number) => number> = {
-  чоловік: (base: number) => base + 5,
-  жінка: (base: number) => base - 161,
+const GENDER_OFFSET: Record<string, number> = {
+  чоловік: 5,
+  жінка: -161,
 };
 
 const calculateBMR = (
@@ -23,32 +15,28 @@ const calculateBMR = (
   gender: Gender
 ) => {
   if (!weight || !height || !age || !gender) return 0;
-  const base = 10 * weight + 6.25 * height - 5 * age;
-  return GENDER_BASE[gender](base);
+  const offset = GENDER_OFFSET[gender];
+  if (offset === undefined) return 0;
+  return Math.round(10 * weight + 6.25 * height - 5 * age + offset);
 };
 
-const calculateTDEE = (bmr: number, activityLevel: ActivityLevel) => {
-  if (!activityLevel) return 0;
-  return Math.round(bmr * ACTIVITY_MULTIPLIERS[activityLevel]);
-};
-
-const calculateProtein = (tdee: number) => Math.round(tdee * 0.25);
-const calculateCarbohydrates = (tdee: number) => Math.round(tdee * 0.4);
-const calculateFat = (tdee: number) => Math.round(tdee * 0.3);
+const calculateProtein = (bmr: number) => Math.round((bmr * 0.25) / 4);
+const calculateCarbohydrates = (bmr: number) => Math.round((bmr * 0.4) / 4);
+const calculateFat = (bmr: number) => Math.round((bmr * 0.3) / 9);
 
 export const calculateUserNormaValues = ({
   weight,
   height,
   age,
   gender,
-  activityLevel,
-}: User) => {
+}: Pick<User, "weight" | "height" | "age" | "gender">) => {
   const bmr = calculateBMR(weight, height, age, gender);
-  const tdee = calculateTDEE(bmr, activityLevel);
-  const protein = calculateProtein(tdee);
-  const carbohydrates = calculateCarbohydrates(tdee);
-  const fat = calculateFat(tdee);
-  return { bmr, tdee, protein, carbohydrates, fat };
+  return {
+    bmr,
+    protein: calculateProtein(bmr),
+    carbohydrates: calculateCarbohydrates(bmr),
+    fat: calculateFat(bmr),
+  };
 };
 
 const authCookieOptions: CookieOptions = {

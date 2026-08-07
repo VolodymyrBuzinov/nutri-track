@@ -18,7 +18,6 @@ const PROFILE_FIELDS: DashboardProfileField[] = [
   "weight",
   "gender",
   "height",
-  "activityLevel",
 ] as const;
 
 const isProfileFieldFilled = (value: unknown) =>
@@ -59,7 +58,7 @@ const calculateProgress = (meals: Meal[], user: User): DashboardProgress => {
   return {
     calories: {
       consumed: consumedCalories,
-      remaining: fallbackNegativeValue(norms.tdee - consumedCalories),
+      remaining: fallbackNegativeValue(norms.bmr - consumedCalories),
     },
     protein: {
       consumed: consumedProtein,
