@@ -761,7 +761,6 @@ export const openApiDocument = {
           "weight",
           "gender",
           "height",
-          "activityLevel",
           "avatarUrl",
         ],
         properties: {
@@ -778,10 +777,6 @@ export const openApiDocument = {
           weight: { type: "number" },
           gender: { type: "string", enum: ["чоловік", "жінка", ""] },
           height: { type: "number" },
-          activityLevel: {
-            type: "string",
-            enum: ["малий", "середній", "високий", ""],
-          },
           avatarUrl: { type: "string" },
         },
       },
@@ -793,10 +788,6 @@ export const openApiDocument = {
           weight: { type: "number" },
           gender: { type: "string", enum: ["чоловік", "жінка", ""] },
           height: { type: "number" },
-          activityLevel: {
-            type: "string",
-            enum: ["малий", "середній", "високий", ""],
-          },
         },
       },
       MealProduct: {

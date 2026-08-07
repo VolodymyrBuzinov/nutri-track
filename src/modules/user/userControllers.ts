@@ -15,7 +15,7 @@ export const getCurrentUser = async (_req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const { userId } = res.locals?.auth;
-  const { name, age, weight, gender, height, activityLevel } = req.body;
+  const { name, age, weight, gender, height } = req.body;
 
   const user = await updateUserService(userId, {
     name,
@@ -23,7 +23,6 @@ export const updateUser = async (req: Request, res: Response) => {
     weight,
     gender,
     height,
-    activityLevel,
   });
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: user });
 };

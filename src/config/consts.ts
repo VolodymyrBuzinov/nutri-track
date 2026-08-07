@@ -24,7 +24,6 @@ export const PROFILE_FIELDS_DICTIONARY = {
   weight: "Вага",
   gender: "Стать",
   height: "Зріст",
-  activityLevel: "Рівень активності",
 } as const;
 
 export const ERROR_CODES = {

@@ -1,11 +1,6 @@
 import { Meal } from "../meals/mealsTypes.js";
 
-export type DashboardProfileField =
-  | "age"
-  | "weight"
-  | "gender"
-  | "height"
-  | "activityLevel";
+export type DashboardProfileField = "age" | "weight" | "gender" | "height";
 
 export type DashboardProgress = {
   calories: {

@@ -126,7 +126,6 @@ export const getDashboardService = async (
     weight: user.weight,
     gender: user.gender,
     height: user.height,
-    activityLevel: user.activityLevel,
   });
 
   const mealsPlan = await getMealsPlanByUserIdAndDateService(userId, date);

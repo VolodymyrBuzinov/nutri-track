@@ -80,7 +80,6 @@ model public_users {
   weight        Int       @default(0)
   avatarUrl     String?   @map("avatar_url") @db.VarChar
   gender        String    @default("") @db.VarChar
-  activityLevel String    @default("") @map("activity_level") @db.VarChar
   profiles      profiles  @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@map("users")
