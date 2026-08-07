@@ -11,8 +11,6 @@ import {
 import { Meal } from "../meals/mealsTypes.js";
 import { PROFILE_FIELDS_DICTIONARY } from "@/config/consts.js";
 
-const fallbackNegativeValue = (value: number) => (value < 0 ? 0 : value);
-
 const PROFILE_FIELDS: DashboardProfileField[] = [
   "age",
   "weight",
@@ -58,21 +56,19 @@ const calculateProgress = (meals: Meal[], user: User): DashboardProgress => {
   return {
     calories: {
       consumed: consumedCalories,
-      remaining: fallbackNegativeValue(norms.bmr - consumedCalories),
+      remaining: norms.bmr - consumedCalories,
     },
     protein: {
       consumed: consumedProtein,
-      remaining: fallbackNegativeValue(norms.protein - consumedProtein),
+      remaining: norms.protein - consumedProtein,
     },
     carbohydrates: {
       consumed: consumedCarbohydrates,
-      remaining: fallbackNegativeValue(
-        norms.carbohydrates - consumedCarbohydrates
-      ),
+      remaining: norms.carbohydrates - consumedCarbohydrates,
     },
     fat: {
       consumed: consumedFat,
-      remaining: fallbackNegativeValue(norms.fat - consumedFat),
+      remaining: norms.fat - consumedFat,
     },
   };
 };
