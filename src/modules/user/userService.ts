@@ -10,7 +10,11 @@ import { prisma } from "@/config/db/prisma.js";
 import { format } from "date-fns";
 import { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
 import { serviceClient } from "@/config/supabase.js";
-import { createImageUrl } from "@/utils/storage.js";
+import { getImageUrl } from "@/utils/storage.js";
+
+const avatarsBucket = "users_avatars";
+
+const getAvatarPath = (userId: string) => `${userId}/avatar`;
 
 export const getUsersData = async () => {
   const users = await prisma.public_users.findMany();
@@ -68,8 +72,8 @@ export const updateUserAvatarService = async (
 ) => {
   await getUserByIdService(userId);
   const { data: storageData, error } = await serviceClient.storage
-    .from("users_avatars")
-    .upload(`${userId}/avatar`, image.buffer, {
+    .from(avatarsBucket)
+    .upload(getAvatarPath(userId), image.buffer, {
       contentType: image.contentType,
       upsert: true,
     });
@@ -81,16 +85,18 @@ export const updateUserAvatarService = async (
     );
   }
 
-  return {
-    avatarUrl: createImageUrl("users_avatars", storageData.path),
-  };
+  const avatarUrl = getImageUrl(avatarsBucket, storageData.path);
+
+  await updateUserService(userId, { avatarUrl });
+
+  return { avatarUrl };
 };
 
 export const deleteUserAvatarService = async (userId: string) => {
   await getUserByIdService(userId);
   const { error } = await serviceClient.storage
-    .from("users_avatars")
-    .remove([`${userId}/avatar`]);
+    .from(avatarsBucket)
+    .remove([getAvatarPath(userId)]);
   if (error) {
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -98,4 +104,6 @@ export const deleteUserAvatarService = async (userId: string) => {
       ERROR_CODES.FAILED_TO_DELETE_AVATAR
     );
   }
+
+  await updateUserService(userId, { avatarUrl: "" });
 };

@@ -9,7 +9,11 @@ import {
 } from "@/config/consts.js";
 import { serviceClient } from "@/config/supabase.js";
 import type { ValidatedImageUpload } from "@/middlewares/imageUploadMiddleware.js";
-import { createImageUrl } from "@/utils/storage.js";
+import { getImageUrl } from "@/utils/storage.js";
+
+const mealsImagesBucket = "meals_images";
+
+const getMealImagePath = (mealSlug: string) => `${mealSlug ?? ""}/image`;
 
 export const createMealAsAdminService = async (meal: Omit<Meal, "id">) => {
   try {
@@ -61,8 +65,8 @@ export const uploadMealImageService = async (
   image: ValidatedImageUpload
 ) => {
   const { data: storageData, error } = await serviceClient.storage
-    .from("meals_images")
-    .upload(`${mealSlug ?? ""}/image`, image.buffer, {
+    .from(mealsImagesBucket)
+    .upload(getMealImagePath(mealSlug), image.buffer, {
       contentType: image.contentType,
     });
 
@@ -83,14 +87,14 @@ export const uploadMealImageService = async (
   }
 
   return {
-    imageUrl: createImageUrl("meals_images", storageData.path),
+    imageUrl: getImageUrl(mealsImagesBucket, storageData.path),
   };
 };
 
 export const deleteMealImageService = async (mealSlug: string) => {
   const { error } = await serviceClient.storage
-    .from("meals_images")
-    .remove([`${mealSlug ?? ""}/image`]);
+    .from(mealsImagesBucket)
+    .remove([getMealImagePath(mealSlug)]);
   if (error) {
     throw new AppError(
       HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -105,8 +109,8 @@ export const updateMealImageService = async (
   image: ValidatedImageUpload
 ) => {
   const { data: storageData, error } = await serviceClient.storage
-    .from("meals_images")
-    .update(`${mealSlug ?? ""}/image`, image.buffer, {
+    .from(mealsImagesBucket)
+    .update(getMealImagePath(mealSlug), image.buffer, {
       contentType: image.contentType,
       upsert: true,
     });
@@ -119,6 +123,6 @@ export const updateMealImageService = async (
   }
 
   return {
-    imageUrl: createImageUrl("meals_images", storageData.path),
+    imageUrl: getImageUrl(mealsImagesBucket, storageData.path),
   };
 };
