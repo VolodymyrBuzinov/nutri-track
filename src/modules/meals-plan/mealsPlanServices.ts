@@ -6,6 +6,25 @@ import {
 } from "@/config/consts.js";
 import { AppError } from "@/services/appError.js";
 
+const getOwnedMealsPlan = async (planId: string, userId: string) => {
+  const plan = await prisma.meals_plans.findFirst({
+    where: {
+      id: planId,
+      user_id: userId,
+    },
+  });
+
+  if (!plan) {
+    throw new AppError(
+      HTTP_STATUS_CODES.NOT_FOUND,
+      ERROR_MESSAGES.MEALS_PLAN_NOT_FOUND,
+      ERROR_CODES.MEALS_PLAN_NOT_FOUND
+    );
+  }
+
+  return plan;
+};
+
 export const getMealsPlanByUserIdAndDateService = async (
   userId: string,
   date: string
@@ -62,6 +81,8 @@ export const updateMealsPlanService = async (
   mealsIds: string[],
   date: string
 ) => {
+  await getOwnedMealsPlan(planId, userId);
+
   const meals = await prisma.meals.findMany({
     where: {
       id: {
@@ -103,20 +124,7 @@ export const deleteMealsPlanItemService = async (
   mealId: string,
   userId: string
 ) => {
-  const plan = await prisma.meals_plans.findFirst({
-    where: {
-      id: planId,
-      user_id: userId,
-    },
-  });
-
-  if (!plan) {
-    throw new AppError(
-      HTTP_STATUS_CODES.NOT_FOUND,
-      ERROR_MESSAGES.MEALS_PLAN_NOT_FOUND,
-      ERROR_CODES.MEALS_PLAN_NOT_FOUND
-    );
-  }
+  const plan = await getOwnedMealsPlan(planId, userId);
 
   const planItem = await prisma.meals_plan_items.findFirst({
     where: {
@@ -142,7 +150,9 @@ export const deleteMealsPlanItemService = async (
   return getMealsPlanByUserIdAndDateService(userId, plan.date);
 };
 
-export const resetMealsPlanService = async (id: string) => {
+export const resetMealsPlanService = async (id: string, userId: string) => {
+  await getOwnedMealsPlan(id, userId);
+
   const plan = await prisma.meals_plans.update({
     where: {
       id,

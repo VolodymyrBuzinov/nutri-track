@@ -50,7 +50,11 @@ adminMealsRoutes.patch(
   asyncHandler(updateMealAsAdmin)
 );
 
-adminMealsRoutes.delete("/:mealSlug", asyncHandler(deleteMealAsAdmin));
+adminMealsRoutes.delete(
+  "/:mealSlug",
+  adminAuthMiddleware,
+  asyncHandler(deleteMealAsAdmin)
+);
 
 adminMealsRoutes.post(
   "/:mealSlug/image",

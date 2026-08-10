@@ -51,7 +51,11 @@ export const deleteMealsPlanItem = async (req: Request, res: Response) => {
 
 export const resetMealsPlan = async (req: Request, res: Response) => {
   const { planId } = req.params;
-  const mealsPlan = await resetMealsPlanService(planId as string);
+  const { userId } = res.locals.auth;
+  const mealsPlan = await resetMealsPlanService(
+    planId as string,
+    userId as string
+  );
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({
     data: mealsPlan,
   });
