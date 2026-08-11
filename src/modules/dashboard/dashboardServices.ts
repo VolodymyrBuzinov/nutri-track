@@ -38,6 +38,27 @@ const getProfileStatus = (
   };
 };
 
+const isMealComposition = (
+  composition: unknown
+): composition is Meal["composition"] => {
+  if (
+    !composition ||
+    typeof composition !== "object" ||
+    Array.isArray(composition)
+  ) {
+    return false;
+  }
+
+  const { calories, protein, carbohydrates, fat } = composition as Record<
+    string,
+    unknown
+  >;
+
+  return [calories, protein, carbohydrates, fat].every(
+    (value) => typeof value === "number" && Number.isFinite(value)
+  );
+};
+
 const calculateProgress = (meals: Meal[], user: User): DashboardProgress => {
   const norms = calculateUserNormaValues(user);
 
@@ -47,10 +68,13 @@ const calculateProgress = (meals: Meal[], user: User): DashboardProgress => {
   let consumedFat = 0;
 
   for (const meal of meals) {
-    consumedCalories += meal.composition.calories;
-    consumedProtein += meal.composition.protein;
-    consumedCarbohydrates += meal.composition.carbohydrates;
-    consumedFat += meal.composition.fat;
+    const composition = meal?.composition;
+    if (!isMealComposition(composition)) continue;
+
+    consumedCalories += composition.calories;
+    consumedProtein += composition.protein;
+    consumedCarbohydrates += composition.carbohydrates;
+    consumedFat += composition.fat;
   }
 
   return {
@@ -94,7 +118,8 @@ const findRecommendedMeals = async (
       continue;
     }
 
-    const composition = meal.composition as unknown as Meal["composition"];
+    const composition = meal?.composition;
+    if (!isMealComposition(composition)) continue;
 
     const isWithinDailyNorm =
       composition.calories <= progress.calories.remaining &&

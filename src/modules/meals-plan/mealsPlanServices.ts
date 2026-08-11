@@ -45,10 +45,11 @@ export const getMealsPlanByUserIdAndDateService = async (
   date: string
 ) => {
   const plan = await findMealsPlan(userId, date);
+  if (!plan) return null;
 
   const planMeals = await prisma.meals_plan_items.findMany({
     where: {
-      meals_plan_id: plan?.id,
+      meals_plan_id: plan.id,
     },
     include: {
       meals: true,
@@ -56,7 +57,7 @@ export const getMealsPlanByUserIdAndDateService = async (
   });
 
   return {
-    id: plan?.id,
+    id: plan.id,
     userId,
     date,
     meals: planMeals.map((item) => item.meals),
