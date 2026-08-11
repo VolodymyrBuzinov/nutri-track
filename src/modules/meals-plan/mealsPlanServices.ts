@@ -25,22 +25,30 @@ const getOwnedMealsPlan = async (planId: string, userId: string) => {
   return plan;
 };
 
-export const getMealsPlanByUserIdAndDateService = async (
-  userId: string,
-  date: string
-) => {
-  const plan = await prisma.meals_plans.findFirst({
+const findMealsPlan = async (userId: string, date: string) => {
+  const plan = await prisma.meals_plans.findUnique({
     where: {
-      user_id: userId,
-      date,
+      user_id_date: {
+        user_id: userId,
+        date,
+      },
     },
   });
 
   if (!plan) return null;
 
+  return plan;
+};
+
+export const getMealsPlanByUserIdAndDateService = async (
+  userId: string,
+  date: string
+) => {
+  const plan = await findMealsPlan(userId, date);
+
   const planMeals = await prisma.meals_plan_items.findMany({
     where: {
-      meals_plan_id: plan.id,
+      meals_plan_id: plan?.id,
     },
     include: {
       meals: true,
@@ -48,7 +56,7 @@ export const getMealsPlanByUserIdAndDateService = async (
   });
 
   return {
-    id: plan.id,
+    id: plan?.id,
     userId,
     date,
     meals: planMeals.map((item) => item.meals),
@@ -60,17 +68,21 @@ export const createMealsPlanService = async (
   mealsIds: string[],
   date: string
 ) => {
-  await prisma.meals_plans.create({
-    data: {
-      user_id: userId,
-      date,
-      meals_plan_items: {
-        create: mealsIds.map((mealId) => ({
-          meal_id: mealId,
-        })),
+  const existingPlan = await findMealsPlan(userId, date);
+
+  if (!existingPlan) {
+    await prisma.meals_plans.create({
+      data: {
+        user_id: userId,
+        date,
+        meals_plan_items: {
+          create: mealsIds.map((mealId) => ({
+            meal_id: mealId,
+          })),
+        },
       },
-    },
-  });
+    });
+  }
 
   return getMealsPlanByUserIdAndDateService(userId, date);
 };

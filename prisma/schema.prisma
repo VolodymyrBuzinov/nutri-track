@@ -51,6 +51,7 @@ model meals_plans {
   date             String             @db.VarChar
   meals_plan_items meals_plan_items[]
 
+  @@unique([user_id, date])
   @@map("meals-plans")
   @@schema("public")
 }
