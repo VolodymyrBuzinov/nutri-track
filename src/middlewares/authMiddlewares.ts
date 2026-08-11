@@ -9,6 +9,21 @@ import { AppError } from "@/services/appError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { NextFunction, Request, Response } from "express";
 import { getAdminService } from "@/modules/admin/adminServices.js";
+import rateLimit from "express-rate-limit";
+
+export const authRateLimitMiddleware = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    error: {
+      message: ERROR_MESSAGES.TOO_MANY_AUTH_ATTEMPTS,
+      code: ERROR_CODES.TOO_MANY_AUTH_ATTEMPTS,
+    },
+  },
+  statusCode: HTTP_STATUS_CODES.TOO_MANY_REQUESTS,
+});
 
 const getToken = (req: Request, role: Role) => {
   const token = req.cookies?.[`${role}AccessToken`];
