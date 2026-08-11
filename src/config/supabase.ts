@@ -1,7 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { env } from "./env.js";
 
 const clientOptions = {
   auth: {
@@ -11,16 +9,12 @@ const clientOptions = {
 };
 
 export const createAuthClient = () =>
-  createClient(
-    process.env.SUPABASE_URL ?? "",
-    process.env.SUPABASE_KEY ?? "",
-    clientOptions
-  );
+  createClient(env.supabaseUrl, env.supabaseKey, clientOptions);
 
 export const authVerifierClient = createAuthClient();
 
 export const serviceClient = createClient(
-  process.env.SUPABASE_URL ?? "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+  env.supabaseUrl,
+  env.supabaseServiceRoleKey,
   clientOptions
 );
