@@ -39,13 +39,15 @@ export const calculateUserNormaValues = ({
   };
 };
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const authCookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: isProduction,
   sameSite:
     (process.env.COOKIE_SAME_SITE as CookieOptions["sameSite"]) ?? "lax",
   path: "/",
-  partitioned: true,
+  ...(isProduction && { partitioned: true }),
 };
 
 export const setAuthCookies = (
