@@ -45,6 +45,7 @@ const authCookieOptions: CookieOptions = {
   sameSite:
     (process.env.COOKIE_SAME_SITE as CookieOptions["sameSite"]) ?? "lax",
   path: "/",
+  partitioned: true,
 };
 
 export const setAuthCookies = (
