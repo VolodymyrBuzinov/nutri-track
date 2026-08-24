@@ -4,7 +4,7 @@ import { mealProductValidator } from "../meals/mealsValidators.js";
 import { SORT_ORDER } from "@/config/consts.js";
 
 export const getMealsAsAdminValidator = z.object({
-  sortBy: z.enum(["name", "type"]).optional(),
+  sortBy: z.enum(["name", "type", "order"]).optional(),
   sortOrder: z.enum(SORT_ORDER).optional(),
   search: z.string().optional(),
 });
@@ -23,6 +23,7 @@ export const createMealAsAdminValidator = z.object({
   imageUrl: z.string().min(1),
   slug: z.string().min(1),
   type: z.enum(MEAL_TYPE_VALUES),
+  order: z.number().int().min(1),
   composition: mealCompositionValidator,
 });
 
@@ -31,5 +32,6 @@ export const updateMealAsAdminValidator = z.object({
   description: z.string().optional(),
   imageUrl: z.string().optional(),
   type: z.enum(MEAL_TYPE_VALUES).optional(),
+  order: z.number().int().min(1).optional(),
   composition: mealCompositionValidator.partial().optional(),
 });

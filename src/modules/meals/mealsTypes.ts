@@ -13,6 +13,7 @@ export type Meal = {
   imageUrl: string;
   slug: string;
   type: MealType;
+  order: number;
   composition: {
     calories: number;
     protein: number;

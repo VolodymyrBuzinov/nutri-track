@@ -16,6 +16,7 @@ export interface MealsFilters {
 const sortByFields: Record<string, string> = {
   name: "name",
   type: "type",
+  order: "order",
 };
 
 export const getMealsService = async ({
@@ -32,7 +33,7 @@ export const getMealsService = async ({
     },
     orderBy: sortByFields[sortBy]
       ? [{ [sortByFields[sortBy]]: sortOrder }, { id: sortOrder }]
-      : undefined,
+      : [{ order: "asc" }, { id: "asc" }],
   });
   return meals;
 };

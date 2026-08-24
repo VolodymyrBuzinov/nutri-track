@@ -26,6 +26,7 @@ model meals {
   description      String             @default("") @db.VarChar
   imageUrl         String             @default("") @map("image_url") @db.VarChar
   type             String             @default("") @db.VarChar
+  order            Int                @default(0)
   composition      Json?
   meals_plan_items meals_plan_items[]
 

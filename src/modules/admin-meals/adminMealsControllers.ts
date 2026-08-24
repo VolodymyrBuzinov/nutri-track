@@ -31,7 +31,8 @@ export const getMealBySlugAsAdmin = async (req: Request, res: Response) => {
 };
 
 export const createMealAsAdmin = async (req: Request, res: Response) => {
-  const { name, description, type, composition, slug, imageUrl } = req.body;
+  const { name, description, type, composition, slug, imageUrl, order } =
+    req.body;
   const meal = await createMealAsAdminService({
     name,
     description,
@@ -39,19 +40,21 @@ export const createMealAsAdmin = async (req: Request, res: Response) => {
     composition,
     slug,
     imageUrl,
+    order,
   });
   return res.status(HTTP_STATUS_CODES.CREATED).json({ data: meal });
 };
 
 export const updateMealAsAdmin = async (req: Request, res: Response) => {
   const { mealSlug } = req.params;
-  const { name, description, imageUrl, type, composition } = req.body;
+  const { name, description, imageUrl, type, composition, order } = req.body;
   const meal = await updateMealAsAdminService(mealSlug as unknown as string, {
     name,
     description,
     imageUrl,
     type,
     composition,
+    order,
   });
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meal });
 };

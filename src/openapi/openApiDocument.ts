@@ -536,7 +536,7 @@ export const openApiDocument = {
           {
             name: "sortBy",
             in: "query",
-            schema: { type: "string", enum: ["name", "type"] },
+            schema: { type: "string", enum: ["name", "type", "order"] },
           },
           {
             name: "sortOrder",
@@ -822,6 +822,7 @@ export const openApiDocument = {
           "imageUrl",
           "slug",
           "type",
+          "order",
           "composition",
         ],
         properties: {
@@ -834,6 +835,7 @@ export const openApiDocument = {
             type: "string",
             enum: ["сніданок", "обід", "вечеря"],
           },
+          order: { type: "integer", minimum: 0 },
           composition: schemaRef("MealComposition"),
         },
       },
@@ -845,6 +847,7 @@ export const openApiDocument = {
           "imageUrl",
           "slug",
           "type",
+          "order",
           "composition",
         ],
         properties: {
@@ -856,6 +859,7 @@ export const openApiDocument = {
             type: "string",
             enum: ["сніданок", "обід", "вечеря"],
           },
+          order: { type: "integer", minimum: 0 },
           composition: schemaRef("MealComposition"),
         },
       },
@@ -869,6 +873,7 @@ export const openApiDocument = {
             type: "string",
             enum: ["сніданок", "обід", "вечеря"],
           },
+          order: { type: "integer", minimum: 0 },
           composition: {
             type: "object",
             properties: {
