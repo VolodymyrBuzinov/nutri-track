@@ -8,6 +8,8 @@ const GENDER_OFFSET: Record<string, number> = {
   жінка: -161,
 };
 
+const BASIC_COEFFICIENT = 1.1;
+
 const calculateBMR = (
   weight: number,
   height: number,
@@ -17,7 +19,9 @@ const calculateBMR = (
   if (!weight || !height || !age || !gender) return 0;
   const offset = GENDER_OFFSET[gender];
   if (offset === undefined) return 0;
-  return Math.round(10 * weight + 6.25 * height - 5 * age + offset);
+  return Math.round(
+    (10 * weight + 6.25 * height - 5 * age + offset) * BASIC_COEFFICIENT
+  );
 };
 
 const calculateProtein = (bmr: number) => Math.round((bmr * 0.25) / 4);
