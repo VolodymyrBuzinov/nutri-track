@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { HTTP_STATUS_CODES } from "@/config/consts.js";
-import { getMealBySlugService, getMealsService } from "./mealsService.js";
+import {
+  getMealBySlugService,
+  getMealsService,
+  getProductsService,
+} from "./mealsService.js";
 import { SortOrder } from "@/generated/prisma/internal/prismaNamespace.js";
 
 export const getMeals = async (req: Request, res: Response) => {
@@ -11,6 +15,11 @@ export const getMeals = async (req: Request, res: Response) => {
     search: search as string,
   });
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meals });
+};
+
+export const getProducts = async (_req: Request, res: Response) => {
+  const products = await getProductsService();
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: products });
 };
 
 export const getMealBySlug = async (req: Request, res: Response) => {

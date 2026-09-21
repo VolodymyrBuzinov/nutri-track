@@ -6,6 +6,7 @@ import {
 } from "@/config/consts.js";
 import { SortOrder } from "@/generated/prisma/internal/prismaNamespace.js";
 import { prisma } from "@/config/db/prisma.js";
+import { Meal } from "./mealsTypes.js";
 
 export interface MealsFilters {
   sortBy?: string;
@@ -53,4 +54,24 @@ export const getMealBySlugService = async (slug: string) => {
       ERROR_CODES.FAILED_TO_GET_MEAL
     );
   }
+};
+
+export const getProductsService = async () => {
+  const meals = await prisma.meals.findMany({
+    select: {
+      composition: true,
+    },
+  });
+
+  const products: Record<string, boolean> = {};
+
+  for (const meal of meals) {
+    const composition = meal.composition as Meal["composition"];
+
+    for (const product of composition.products) {
+      products[product.name?.toLowerCase?.()?.trim?.()] = true;
+    }
+  }
+
+  return Object.keys(products);
 };
