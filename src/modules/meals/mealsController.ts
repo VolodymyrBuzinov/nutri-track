@@ -19,7 +19,12 @@ export const getMeals = async (req: Request, res: Response) => {
 };
 
 export const getMealsByProducts = async (req: Request, res: Response) => {
-  const { products } = req.query;
+  const products = [req.query.products]
+    .flat()
+    .filter(
+      (item): item is string => typeof item === "string" && item.trim() !== ""
+    )
+    .map((item) => item.trim());
   const meals = await getMealsByProductsService(products as string[]);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meals });
 };
