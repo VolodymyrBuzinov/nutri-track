@@ -279,6 +279,39 @@ export const openApiDocument = {
         },
       },
     },
+    "/meals/search-by-products": {
+      get: {
+        operationId: "getMealsByProducts",
+        tags: ["Meals"],
+        summary: "Search meals by products",
+        description:
+          "Returns meals that contain all of the provided product names in their composition (case-insensitive).",
+        security: accessTokenSecurity,
+        parameters: [
+          {
+            name: "products",
+            in: "query",
+            required: true,
+            description:
+              "Product names. A meal is returned only if it contains every listed product.",
+            schema: {
+              type: "array",
+              items: { type: "string", minLength: 1 },
+              minItems: 1,
+            },
+            style: "form",
+            explode: true,
+          },
+        ],
+        responses: {
+          "200": dataResponse("Meals that contain all provided products.", {
+            type: "array",
+            items: schemaRef("Meal"),
+          }),
+          ...protectedErrors,
+        },
+      },
+    },
     "/meals/{slug}": {
       get: {
         operationId: "getMealBySlug",

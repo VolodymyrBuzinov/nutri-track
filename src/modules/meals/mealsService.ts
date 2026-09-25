@@ -39,6 +39,25 @@ export const getMealsService = async ({
   return meals;
 };
 
+export const getMealsByProductsService = async (products: string[]) => {
+  if (!products?.length) return [];
+
+  const meals = await prisma.$queryRaw`
+    SELECT *
+    FROM meals
+    WHERE (
+      SELECT COUNT(DISTINCT LOWER(p->>'name'))
+      FROM jsonb_array_elements(composition->'products') AS p
+      WHERE LOWER(p->>'name') = ANY(
+        SELECT LOWER(unnest(${products}::text[]))
+      )
+    ) = ${products.length}
+    ORDER BY "order" ASC, id ASC
+  `;
+
+  return meals;
+};
+
 export const getMealBySlugService = async (slug: string) => {
   try {
     const meal = await prisma.meals.findUnique({

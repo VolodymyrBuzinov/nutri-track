@@ -4,6 +4,7 @@ import {
   getMealBySlugService,
   getMealsService,
   getProductsService,
+  getMealsByProductsService,
 } from "./mealsService.js";
 import { SortOrder } from "@/generated/prisma/internal/prismaNamespace.js";
 
@@ -14,6 +15,12 @@ export const getMeals = async (req: Request, res: Response) => {
     sortOrder: sortOrder as SortOrder,
     search: search as string,
   });
+  return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meals });
+};
+
+export const getMealsByProducts = async (req: Request, res: Response) => {
+  const { products } = req.query;
+  const meals = await getMealsByProductsService(products as string[]);
   return res.status(HTTP_STATUS_CODES.SUCCESS).json({ data: meals });
 };
 
