@@ -312,6 +312,23 @@ export const openApiDocument = {
         },
       },
     },
+    "/meals/products": {
+      get: {
+        operationId: "getProducts",
+        tags: ["Meals"],
+        summary: "Get products used in meals",
+        description:
+          "Returns a list of all unique product names that appear in existing meals.",
+        security: accessTokenSecurity,
+        responses: {
+          "200": dataResponse("List of unique product names.", {
+            type: "array",
+            items: { type: "string" },
+          }),
+          ...protectedErrors,
+        },
+      },
+    },
     "/meals/{slug}": {
       get: {
         operationId: "getMealBySlug",
