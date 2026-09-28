@@ -44,14 +44,21 @@ export const getMealsByProductsService = async (products: string[]) => {
 
   const meals = await prisma.$queryRaw`
     SELECT
-    id,
-    name,
-    description,
-    composition,
-    "order",
-    image_url AS "imageUrl",
-    slug,
-    type
+      id,
+      name,
+      description,
+      composition,
+      "order",
+      image_url AS "imageUrl",
+      slug,
+      type,
+      (
+        SELECT COUNT(DISTINCT LOWER(p->>'name'))
+        FROM jsonb_array_elements(composition->'products') AS p
+        WHERE LOWER(p->>'name') = ANY(
+          SELECT LOWER(unnest(${products}::text[]))
+        )
+      )::int AS "matchCount"
     FROM meals
     WHERE (
       SELECT COUNT(DISTINCT LOWER(p->>'name'))
@@ -59,8 +66,8 @@ export const getMealsByProductsService = async (products: string[]) => {
       WHERE LOWER(p->>'name') = ANY(
         SELECT LOWER(unnest(${products}::text[]))
       )
-    ) = ${products.length}
-    ORDER BY "order" ASC, id ASC
+    ) > 0
+    ORDER BY "matchCount" DESC, "order" ASC, id ASC
   `;
 
   return meals;
