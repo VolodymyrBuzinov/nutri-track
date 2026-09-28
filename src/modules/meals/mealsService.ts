@@ -43,7 +43,15 @@ export const getMealsByProductsService = async (products: string[]) => {
   if (!products?.length) return [];
 
   const meals = await prisma.$queryRaw`
-    SELECT *
+    SELECT
+    id,
+    name,
+    description,
+    composition,
+    "order",
+    image_url AS "imageUrl",
+    slug,
+    type
     FROM meals
     WHERE (
       SELECT COUNT(DISTINCT LOWER(p->>'name'))

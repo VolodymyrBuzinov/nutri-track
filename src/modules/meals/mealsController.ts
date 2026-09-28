@@ -19,7 +19,7 @@ export const getMeals = async (req: Request, res: Response) => {
 };
 
 export const getMealsByProducts = async (req: Request, res: Response) => {
-  const products = [req.query.products]
+  const products = [req.query["products[]"]]
     .flat()
     .filter(
       (item): item is string => typeof item === "string" && item.trim() !== ""
